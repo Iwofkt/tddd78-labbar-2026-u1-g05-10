@@ -1,13 +1,14 @@
 <component name="libraryTable">
   <library name="commons-cli">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/libs/commons-cli/commons-cli-1.9.0.jar" />
+      <root url="file://$PROJECT_DIR$/libs/commons-cli" />
+      <root url="file://$PROJECT_DIR$/libs/commons-cli" />
     </CLASSES>
-    <JAVADOC>
-      <root url="file://$PROJECT_DIR$/libs/commons-cli/commons-cli-1.9.0-javadoc.jar" />
-    </JAVADOC>
+    <JAVADOC />
     <SOURCES>
-      <root url="file://$PROJECT_DIR$/libs/commons-cli/commons-cli-1.9.0-sources.jar" />
+      <root url="file://$PROJECT_DIR$/libs/commons-cli" />
     </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/libs/commons-cli" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/libs/commons-cli" recursive="false" type="SOURCES" />
   </library>
 </component>
