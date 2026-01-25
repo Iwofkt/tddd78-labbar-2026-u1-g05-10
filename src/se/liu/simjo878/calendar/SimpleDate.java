@@ -12,7 +12,7 @@ public class SimpleDate {
     }
 
     @Override public String toString() {
-	return (year+"-"+ month.getNumber()+"-"+day);
+	return 	String.format("%04d-%02d-%02d", year, month.getNumber(), day);
     }
 
     public int getYear() {

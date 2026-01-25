@@ -4,17 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cal {
-    private List<Appointment> appointments;
+
+    private List<Appointment> appointments = null;
 
     public Cal(List<Appointment> appointments)
     {
-	appointments = new ArrayList<>();
+	this.appointments = appointments;
     }
+
 
     public void show()
     {
 	for (Appointment appointment : appointments){
-	    System.out.println(appointment.toString());
+	    System.out.println(appointment + " " + appointment.getSubject());
 	}
     }
 
@@ -23,6 +25,7 @@ public class Cal {
 		     int endMinute, String subject)
     {
 	// inparameter control
+
 	if (year <= 1970){
 	    throw new IllegalArgumentException("year must be greater than 1970");
 	}
@@ -35,11 +38,12 @@ public class Cal {
 	    throw new IllegalArgumentException("Minutes must be between 0 and 59");
 	}
 
-	if (Month.getMonthNumber(month) == 1){
+	if (Month.getMonthNumber(month) == -1){
 	    throw new IllegalArgumentException("unknown month: " + month);
 	}
 
 	if (day < 1 || day > Month.getMonthLength(month)){
+	    System.out.println(Month.getMonthNumber(month));
 	    throw new IllegalArgumentException("Invalid day: " + day + " in month: " + month);
 	}
 
