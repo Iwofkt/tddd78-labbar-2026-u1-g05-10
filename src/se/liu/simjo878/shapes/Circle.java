@@ -22,8 +22,12 @@ public class Circle extends AbstractShape
 	return getX() + " " + getY() + " " + radius + " " + getColor();
     }
 
-    @Override public void draw() {
-	System.out.println("Ritar: " + this);
+    @Override public void draw(final Graphics g) {
+	//System.out.println("Ritar: " + this);
+	g.setColor(color);
+	g.fillOval(x, y, radius, radius);  // fyll
+	g.drawOval(x, y, radius, radius); // calc. from radius!
+
     }
 
 }

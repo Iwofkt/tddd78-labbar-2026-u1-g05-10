@@ -4,7 +4,7 @@ import java.awt.*;
 
 public interface Shape
 {
-    public void draw();
+    public void draw(final Graphics g);
 
     public int getX();
 

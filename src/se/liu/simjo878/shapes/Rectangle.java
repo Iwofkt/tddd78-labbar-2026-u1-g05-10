@@ -28,7 +28,10 @@ public class Rectangle extends AbstractShape
 	return x + " " + y + " " + width + " " + height + " " + color;
     }
 
-    @Override public void draw() {
-	System.out.println("Ritar: " + this);
+    @Override public void draw(final Graphics g) {
+	//System.out.println("Ritar: " + this);
+	g.setColor(color);
+	g.fillRect(x, y, width, height);
+	g.drawRect(x, y, width, height);
     }
 }
