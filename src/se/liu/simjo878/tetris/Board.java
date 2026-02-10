@@ -13,31 +13,35 @@ public class Board
     private Poly falling;
     private Point fallingPos;
 
+
+
     public Board(int width, int height) {
-	squares = new SquareType[width][height];
-	for (int x = 0; x < width; x++) {
-	    for (int y = 0; y < height; y++) {
-		squares[x][y] = SquareType.EMPTY;
-	    }
-	}
 	this.width = width;
 	this.height = height;
+	squares = new SquareType[width][height];
+
+	for (int col = 0; col < width; col++) {
+	    for (int row = 0; row < height; row++) {
+		squares[col][row] = SquareType.EMPTY;
+	    }
+	}
 
 	final TrenominoMaker trenominoMaker = new TrenominoMaker();
-	this.falling = trenominoMaker.getPoly(5);
-	this.fallingPos = new Point((width - 1) / 2, (height - 1) / 2);
+	this.falling = trenominoMaker.getPoly(6);
+	this.fallingPos = new Point((width/2) - 1, (height/2) - 1);
     }
 
     public int getWidth() {
-	return width;
+	return width;  // antal kolumner
     }
 
     public int getHeight() {
-	return height;
+	return height;  // antal rader
     }
 
-    public SquareType getSquareType(int x, int y){
-	return squares[x][y];
+    public SquareType getSquareType(int col, int row) {
+	// col = x-koordinat (kolumn), row = y-koordinat (rad)
+	return squares[col][row];
     }
 
     public Poly getFalling() {
@@ -48,9 +52,9 @@ public class Board
 	return fallingPos;
     }
 
-    public SquareType getVisibleSquareAt(int x, int y) {
+    public SquareType getVisibleSquareAt(int col, int row) {
 	if (falling == null) {
-	    return squares[x][y];
+	    return squares[col][row];
 	}
 
 	Rectangle fallingBounds = new Rectangle(
@@ -60,27 +64,29 @@ public class Board
 		falling.getHeight()
 	);
 
-	if (fallingBounds.contains(x, y)) {
-	    SquareType polySquare =
-		    falling.getSquareType(x - fallingPos.x, y - fallingPos.y);
+	if (fallingBounds.contains(col, row)) {
+	    SquareType polySquare = falling.getSquareType(
+		    col - fallingPos.x,
+		    row - fallingPos.y
+	    );
 
 	    if (polySquare != SquareType.EMPTY) {
 		return polySquare;
 	    }
 	}
-	return squares[x][y];
+	return squares[col][row];
     }
 
-
-    public void randomBoard(){
-	for (int x = 0; x < width; x++) {
-	    for (int y = 0; y < height; y++) {
-		squares[x][y] = SquareType.values()[RND.nextInt(SquareType.values().length)];
+    public void randomBoard() {
+	for (int col = 0; col < width; col++) {
+	    for (int row = 0; row < height; row++) {
+		squares[col][row] = SquareType.values()[RND.nextInt(SquareType.values().length)];
 	    }
 	}
     }
 
     public static void main(String[] args) {
-	Board board = new Board(10, 10);
+	Board board = new Board(10, 20);
+	board.randomBoard();
     }
 }

@@ -2,26 +2,40 @@ package se.liu.simjo878.tetris;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class TetrisViewer
 {
-    Board board;
-    BoardToTextConverter converter = new BoardToTextConverter();
+    private Board board;
+    private final static int UPDATE_INTERVAL = 1000;
 
-    TetrisViewer(Board board)
+    public TetrisViewer(Board board)
     {
 	this.board = board;
     }
-    public void show(){
+
+    public void show() {
 	JFrame frame = new JFrame("Tetris Viewer");
 	frame.setLayout(new BorderLayout());
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-	JTextArea textArea = new JTextArea(board.getHeight(), board.getWidth());
-	textArea.setText(converter.convertToText(board));
-	textArea.setFont(new Font("Monospaced", Font.PLAIN, 20));
+	TetrisComponent tetrisComponent = new TetrisComponent(board);
 
-	frame.add(textArea, BorderLayout.CENTER);
+	frame.add(tetrisComponent, BorderLayout.CENTER);
+
 	frame.pack();
 	frame.setVisible(true);
+
+	Timer timer = new Timer(UPDATE_INTERVAL, new ActionListener() {
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		board.randomBoard();
+		tetrisComponent.paintComponent(frame.getGraphics());
+	    }
+	});
+
+	timer.setCoalesce(true);
+	timer.start();
     }
 }
