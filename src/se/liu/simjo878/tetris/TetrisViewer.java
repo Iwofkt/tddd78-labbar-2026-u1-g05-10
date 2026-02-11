@@ -31,7 +31,6 @@ public class TetrisViewer
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		board.randomBoard();
-		tetrisComponent.paintComponent(frame.getGraphics());
 	    }
 	});
 

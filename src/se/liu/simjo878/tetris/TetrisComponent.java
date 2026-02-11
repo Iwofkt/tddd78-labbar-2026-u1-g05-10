@@ -4,11 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.EnumMap;
 
-public class TetrisComponent extends JComponent
+public class TetrisComponent extends JComponent implements BoardListener
 {
     private Board board;
 
     // Grafiska konstanter
+
     private final static int SQUARE_SIZE = 40;  // pixelstorlek per ruta
     private final static int MARGIN = 5;        // mellanrum mellan rutor
 
@@ -30,15 +31,22 @@ public class TetrisComponent extends JComponent
 
     public TetrisComponent(Board board) {
 	this.board = board;
+	board.addBoardListener(this);
     }
 
-    @Override
-    public Dimension getPreferredSize() {
+
+    @Override public Dimension getPreferredSize() {
 	// Beräkna storlek baserat på antal kolumner och rader
 	int widthInPixels = board.getWidth() * (SQUARE_SIZE + MARGIN) + MARGIN;
 	int heightInPixels = board.getHeight() * (SQUARE_SIZE + MARGIN) + MARGIN;
 	return new Dimension(widthInPixels, heightInPixels);
     }
+
+    @Override
+    public void boardChanged() {
+	repaint();
+    }
+
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -102,9 +110,8 @@ public class TetrisComponent extends JComponent
 		    int boardCol = startCol + polyCol;
 		    int boardRow = startRow + polyRow;
 
-		    // Kontrollera att positionen är inom brädet
-		    if (boardCol >= 0 && boardCol < board.getWidth() &&
-			boardRow >= 0 && boardRow < board.getHeight()) {
+		    // Kontrollera att positionen ä // <-- viktigtr inom brädet
+		    if (boardCol >= 0 && boardCol < board.getWidth() && boardRow >= 0 && boardRow < board.getHeight()) {
 			drawSquare(g2d, boardCol, boardRow, squareType);
 		    }
 		}
