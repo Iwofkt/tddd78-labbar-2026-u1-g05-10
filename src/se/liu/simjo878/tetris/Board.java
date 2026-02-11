@@ -1,17 +1,24 @@
 package se.liu.simjo878.tetris;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Board
 {
     private final static Random RND = new Random();
+    private static final int DEFAULT_POLY_INDEX = 6;
+
+
     private SquareType[][] squares;
     private int width;
     private int height;
 
     private Poly falling;
     private Point fallingPos;
+
+    private List<BoardListener> listeners;
 
 
 
@@ -26,9 +33,10 @@ public class Board
 	    }
 	}
 
-	final TrenominoMaker trenominoMaker = new TrenominoMaker();
-	this.falling = trenominoMaker.getPoly(6);
+	final TetrominoMaker tetrominoMaker = new TetrominoMaker();
+	this.falling = tetrominoMaker.getPoly(DEFAULT_POLY_INDEX);
 	this.fallingPos = new Point((width/2) - 1, (height/2) - 1);
+	this.listeners = new ArrayList<>();
     }
 
     public int getWidth() {
@@ -83,8 +91,18 @@ public class Board
 		squares[col][row] = SquareType.values()[RND.nextInt(SquareType.values().length)];
 	    }
 	}
+	notifyListeners();
     }
 
+    public void addBoardListener(BoardListener bl){
+	listeners.add(bl);
+    }
+
+    private void notifyListeners(){
+	for (BoardListener bl : listeners){
+	    bl.boardChanged();
+	}
+    }
     public static void main(String[] args) {
 	Board board = new Board(10, 20);
 	board.randomBoard();

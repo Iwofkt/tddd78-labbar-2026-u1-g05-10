@@ -1,6 +1,6 @@
 package se.liu.simjo878.tetris;
 
-public class TrenominoMaker
+public class TetrominoMaker
 {
     public int getNumberOfTypes() {
 	return SquareType.values().length -1;

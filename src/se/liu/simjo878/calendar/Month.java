@@ -7,7 +7,7 @@ public class Month {
     private int number; // månad nummer
     private int days; // antal dagar i månaden
 
-    final static Map<String,Integer> MONTH_NAME_TO_LENGTH = Map.ofEntries(
+    private static final Map<String,Integer> MONTH_NAME_TO_LENGTH = Map.ofEntries(
 	    Map.entry("january", 31),
 	    Map.entry("february", 28),
 	    Map.entry("march", 31),
@@ -21,7 +21,7 @@ public class Month {
 	    Map.entry("november", 30),
 	    Map.entry("december", 31)
     );
-    final static Map<String,Integer> MONTH_NAME_TO_NUMBER = Map.ofEntries(
+    private static final Map<String,Integer> MONTH_NAME_TO_NUMBER = Map.ofEntries(
 	    Map.entry("january", 1),
 	    Map.entry("february", 2),
 	    Map.entry("march", 3),

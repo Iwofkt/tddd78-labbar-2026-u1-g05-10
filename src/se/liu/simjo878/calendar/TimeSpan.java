@@ -1,8 +1,8 @@
 package se.liu.simjo878.calendar;
 
 public class TimeSpan {
-    TimePoint start;
-    TimePoint end;
+    private final TimePoint start;
+    private final TimePoint end;
 
     public TimeSpan(TimePoint start, TimePoint end) {
 	this.start = start;
@@ -18,6 +18,6 @@ public class TimeSpan {
     }
 
     @Override public String toString() {
-	return (start.toString() + " - " + end.toString());
+	return (start + " - " + end);
     }
 }

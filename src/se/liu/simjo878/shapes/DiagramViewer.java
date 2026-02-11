@@ -14,26 +14,26 @@ public class DiagramViewer
 
     // Set a fixed seed 0 so you always get the same
     // shapes (for debugging)
-    private final static Random rnd = new Random();
+    private final static Random RND = new Random();
 
     private static Color getRandomColor() {
-	return COLORS.get(rnd.nextInt(COLORS.size()));
+	return COLORS.get(RND.nextInt(COLORS.size()));
     }
 
     private static Circle getRandomCircle() {
-	return new Circle(rnd.nextInt(400), rnd.nextInt(400),
-			  rnd.nextInt(200), getRandomColor());
+	return new Circle(RND.nextInt(400), RND.nextInt(400),
+			  RND.nextInt(200), getRandomColor());
     }
 
     private static Rectangle getRandomRectangle() {
-	return new Rectangle(rnd.nextInt(400), rnd.nextInt(400),
-			     rnd.nextInt(200), rnd.nextInt(200),
+	return new Rectangle(RND.nextInt(400), RND.nextInt(400),
+			     RND.nextInt(200), RND.nextInt(200),
 			     getRandomColor());
     }
 
     private static Text getRandomText() {
-	return new Text(rnd.nextInt(400), rnd.nextInt(400),
-			rnd.nextInt(400), getRandomColor(),"Hello");
+	return new Text(RND.nextInt(400), RND.nextInt(400),
+			RND.nextInt(400), getRandomColor(), "Hello");
     }
 
     public static void main(String[] args) {

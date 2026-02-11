@@ -5,10 +5,10 @@ import java.awt.*;
 
 public class OldTetrisViewer
 {
-    Board board;
-    BoardToTextConverter converter = new BoardToTextConverter();
+    private Board board;
+    private BoardToTextConverter converter = new BoardToTextConverter();
 
-    OldTetrisViewer(Board board)
+    public OldTetrisViewer(Board board)
     {
 	this.board = board;
     }

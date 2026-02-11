@@ -1,15 +1,9 @@
 package se.liu.simjo878.calendar;
-
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 
 public class CreateCalTest
 {
-    @Test
-    void calendarTest()
-    {
-
+    public static void main(String[] args) {
         Cal cal = new Cal(new ArrayList<>());
 
         cal.book(2025, "january", 10, 9, 0, 10, 0, "app 1");
