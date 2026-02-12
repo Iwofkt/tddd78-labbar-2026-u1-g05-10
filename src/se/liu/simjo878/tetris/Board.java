@@ -11,9 +11,11 @@ import java.util.Random;
 public class Board
 {
     private final static Random RND = new Random();
+    private final static int NONE_SQUARES_MARGIN = 2;
     private final static int MARGIN = 10;
     private final static int DOUBLE_MARGIN = 2*MARGIN;
 
+    private boolean gameOver = false;
 
     private SquareType[][] squares;
     private int width;
@@ -84,8 +86,8 @@ public class Board
 	Rectangle fallingBounds = new Rectangle(
 		fallingPos.x,
 		fallingPos.y,
-		falling.getWidth(),
-		falling.getHeight()
+		falling.getSize(),
+		falling.getSize()
 	);
 
 	if (fallingBounds.contains(col, row)) {
@@ -112,6 +114,8 @@ public class Board
 
 
     // -- BOARD OPERATIONS -- //
+
+
     public void randomBoard() {
 	for (int col = 0; col < width; col++) {
 	    for (int row = 0; row < height; row++) {
@@ -123,41 +127,158 @@ public class Board
 
 
     public void tick(){
-	if (getFalling() != null && getFallingPos().y != (height-getFalling().getHeight())) {
-	    moveFalling();
+
+	if (gameOver){
+	    return;
 	}
+
+	if (getFalling() != null) {
+	    moveFalling(1);
+	    if (hasCollision()){
+		moveFalling(-1);
+		addFallingToBoard();
+		removeFullRows();
+		falling = null;
+	    }
+	}
+
 	else {
 	    setFalling();
+	    if (hasCollision()){
+		gameOver = true;
+	    }
 	}
 	notifyListeners();
     }
 
+    //  -- tick helper functions
 
-    private void moveFalling(){
+    private void moveFalling(int value){
+	if (gameOver){
+	    return;
+	}
 	Point newPos = getFallingPos();
-	newPos.y += 1;
+	newPos.y += value;
 	setFallingPos(newPos);
     }
 
 
     private void setFalling(){
 	this.falling = tetrominoMaker.getPoly(
-		RND.nextInt(SquareType.values().length-2)
+		RND.nextInt(SquareType.values().length-NONE_SQUARES_MARGIN)
 	);
 	this.fallingPos = new Point((width/2) - 1, 0);
     }
 
 
-    public void move(Direction direction) {
+    private void addFallingToBoard() {
+	for (int y = 0; y < falling.getSize(); y++) {
+	    for (int x = 0; x < falling.getSize(); x++) {
+
+		if (falling.getSquareType(x, y) != SquareType.EMPTY) {
+
+		    int boardX = fallingPos.x + x + MARGIN;
+		    int boardY = fallingPos.y + y + MARGIN;
+
+		    squares[boardX][boardY] = falling.getSquareType(x, y);
+		}
+	    }
+	}
+    }
+
+    private void removeFullRows() {
+	// Gå igenom varje rad i den "synliga" spelplanen
+	for (int row = 0; row < height; row++) {
+	    boolean full = true;
+
+	    for (int col = 0; col < width; col++) {
+		if (squares[col + MARGIN][row + MARGIN] == SquareType.EMPTY) {
+		    full = false;
+		    break;
+		}
+	    }
+
+	    if (full) {
+		// Flytta ner alla rader ovanför
+		for (int r = row; r > 0; r--) {
+		    for (int c = 0; c < width; c++) {
+			squares[c + MARGIN][r + MARGIN] = squares[c + MARGIN][r - 1 + MARGIN];
+		    }
+		}
+
+		// Sätt översta raden till EMPTY
+		for (int c = 0; c < width; c++) {
+		    squares[c + MARGIN][MARGIN] = SquareType.EMPTY;
+		}
+
+		// Efter att ha tagit bort en rad, kolla samma rad igen
+		row--;
+	    }
+	}
+    }
+
+    //-- game interactions
+    public void move(Direction dir) {
 	Point newPos = getFallingPos();
-	newPos.x += (direction == Direction.LEFT ? 1 : -1);
+	newPos.x += (dir == Direction.LEFT ? 1 : -1);
 	setFallingPos(newPos);
+
+	// does the move result in a collision?
+	if (hasCollision()){
+	    newPos = getFallingPos();
+	    newPos.x += (dir == Direction.LEFT ? -1 : 1);
+	    setFallingPos(newPos);
+	}
 	notifyListeners();
     }
 
     private boolean hasCollision() {
+	if (falling == null) {
+	    return false;
+	}
 
+	for (int x = 0; x < falling.getSize(); x++) {
+	    for (int y = 0; y < falling.getSize(); y++) {
+
+		SquareType blockSquare = falling.getSquareType(x, y);
+
+		// Om rutan i blocket inte är tom
+		if (blockSquare != SquareType.EMPTY) {
+
+		    int boardX = fallingPos.x + x;
+		    int boardY = fallingPos.y + y;
+
+		    SquareType boardSquare =
+			    squares[boardX + MARGIN][boardY + MARGIN];
+
+		    // Om rutan på spelplanen inte är tom → kollision
+		    if (boardSquare != SquareType.EMPTY) {
+			return true;
+		    }
+		}
+	    }
+	}
+	return false;
     }
+
+
+    public void rotate(Direction dir) {
+	if (falling == null || gameOver) {
+	    return;
+	}
+	Poly currentFalling = falling;
+
+	// Skapa ett nytt roterat Poly
+	Poly rotated = falling.rotate(dir == Direction.RIGHT);
+	falling = rotated;
+
+	// Om rotationen leder till kollision, revert
+	if (hasCollision()) {
+	    falling = currentFalling;
+	}
+	notifyListeners();
+    }
+
 
     // -- UPDATE LISTENERS -- //
 

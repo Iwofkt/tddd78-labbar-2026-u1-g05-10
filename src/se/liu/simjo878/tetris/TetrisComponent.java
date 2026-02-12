@@ -101,8 +101,8 @@ public class TetrisComponent extends JComponent implements BoardListener
 	int startRow = fallingPos.y;  // startrad
 
 	// Loopa igenom poly-blockets interna struktur
-	for (int polyRow = 0; polyRow < falling.getHeight(); polyRow++) {
-	    for (int polyCol = 0; polyCol < falling.getWidth(); polyCol++) {
+	for (int polyRow = 0; polyRow < falling.getSize(); polyRow++) {
+	    for (int polyCol = 0; polyCol < falling.getSize(); polyCol++) {
 		SquareType squareType = falling.getSquareType(polyCol, polyRow);
 
 		if (squareType != SquareType.EMPTY) {

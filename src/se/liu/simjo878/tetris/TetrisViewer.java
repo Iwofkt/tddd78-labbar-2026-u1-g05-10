@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 public class TetrisViewer
 {
     private Board board;
-    private final static int UPDATE_INTERVAL = 1000;
+    private final static int UPDATE_INTERVAL = 200;
 
     public TetrisViewer(Board board)
     {
@@ -27,6 +27,8 @@ public class TetrisViewer
 	frame.pack();
 	frame.setVisible(true);
 
+	// -- TIMER-- //
+
 	Timer timer = new Timer(UPDATE_INTERVAL, new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
@@ -37,19 +39,30 @@ public class TetrisViewer
 	timer.setCoalesce(true);
 	timer.start();
 
-	JComponent pane = frame.getRootPane();
 
 	// --- ACTION SETUP --//
+
+
+	JComponent pane = frame.getRootPane();
+
 	final InputMap in = pane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 	in.put(KeyStroke.getKeyStroke("A"), "right");
 	in.put(KeyStroke.getKeyStroke("D"), "left");
+	in.put(KeyStroke.getKeyStroke("W"), "rotateright");
+	in.put(KeyStroke.getKeyStroke("S"), "rotateleft");
+
 	in.put(KeyStroke.getKeyStroke("LEFT"), "right");
 	in.put(KeyStroke.getKeyStroke("RIGHT"), "left");
+	in.put(KeyStroke.getKeyStroke("UP"), "rotateright");
+	in.put(KeyStroke.getKeyStroke("DOWN"), "rotateleft");
+
 	in.put(KeyStroke.getKeyStroke("ctrl Q"), "quit");
 
 	final ActionMap act = pane.getActionMap();
 	act.put("right", new MoveAction(Direction.RIGHT));
 	act.put("left", new MoveAction(Direction.LEFT));
+	act.put("rotateright", new RotateAction(Direction.RIGHT));
+	act.put("rotateleft", new RotateAction(Direction.LEFT));
 	act.put("quit", new QuitAction(0));
     }
 
@@ -66,6 +79,20 @@ public class TetrisViewer
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	    board.move(direction);
+	}
+    }
+
+    //Move action for the falling tetromino
+    private class RotateAction extends AbstractAction {
+	private final Direction direction;
+
+	private RotateAction(Direction direction) {
+	    this.direction = direction;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+	    board.rotate(direction);
 	}
     }
 
