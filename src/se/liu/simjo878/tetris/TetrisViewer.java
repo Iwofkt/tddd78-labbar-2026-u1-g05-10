@@ -24,6 +24,17 @@ public class TetrisViewer
 
 	frame.add(tetrisComponent, BorderLayout.CENTER);
 
+	// -- MENU BAR -- //
+	final JMenuBar bar = new JMenuBar();
+
+	final JMenu file = new JMenu("File");
+	final JMenuItem avsluta = new JMenuItem("Avsluta", 'O');
+	file.add(avsluta);
+	avsluta.addActionListener(new QuitAction(0));
+	bar.add(file);
+
+	frame.setJMenuBar(bar);
+
 	frame.pack();
 	frame.setVisible(true);
 
