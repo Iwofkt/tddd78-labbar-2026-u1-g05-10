@@ -1,14 +1,18 @@
 package se.liu.simjo878.tetris;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 public class Board
 {
     private final static Random RND = new Random();
-    private static final int DEFAULT_POLY_INDEX = 6;
+    private final static int MARGIN = 10;
+    private final static int DOUBLE_MARGIN = 2*MARGIN;
 
 
     private SquareType[][] squares;
@@ -21,26 +25,35 @@ public class Board
     private List<BoardListener> listeners;
     private final TetrominoMaker tetrominoMaker;
 
-
+    // -- CONSTURCTOR -- //
 
     public Board(int width, int height) {
 	this.width = width;
 	this.height = height;
-	squares = new SquareType[width][height];
 
+	squares = new SquareType[width + DOUBLE_MARGIN][height + DOUBLE_MARGIN];
+
+	int totalWidth = width + DOUBLE_MARGIN;
+	int totalHeight = height + DOUBLE_MARGIN;
+
+	squares = new SquareType[totalWidth][totalHeight];
+
+	//fill all with OUTSIDE
+	for (SquareType[] column : squares) {
+	    Arrays.fill(column, SquareType.OUTSIDE);
+	}
+
+	// then fill the "middle" with EMPTY
 	for (int col = 0; col < width; col++) {
 	    for (int row = 0; row < height; row++) {
-		squares[col][row] = SquareType.EMPTY;
+		squares[col + MARGIN][row + MARGIN] = SquareType.EMPTY;
 	    }
 	}
-	/*
-	this.falling = tetrominoMaker.getPoly(DEFAULT_POLY_INDEX);
-	this.fallingPos = new Point((width/2) - 1, (height/2) - 1);
-	*/
 	this.listeners = new ArrayList<>();
 	this.tetrominoMaker = new TetrominoMaker();
-
     }
+
+    // -- GETTERS -- //
 
     public int getWidth() {
 	return width;  // antal kolumner
@@ -52,26 +65,20 @@ public class Board
 
     public SquareType getSquareType(int col, int row) {
 	// col = x-koordinat (kolumn), row = y-koordinat (rad)
-	return squares[col][row];
+	return squares[col+MARGIN][row+MARGIN];
     }
 
     public Poly getFalling() {
 	return falling;
     }
 
-    private void setFalling(Poly falling) {
-	this.falling = falling;
-    }
     public Point getFallingPos() {
 	return fallingPos;
     }
 
-    private void setFallingPos(Point fallingPos) {
-	this.fallingPos = fallingPos;
-    }
     public SquareType getVisibleSquareAt(int col, int row) {
 	if (falling == null) {
-	    return squares[col][row];
+	    return squares[col+MARGIN][row+MARGIN];
 	}
 
 	Rectangle fallingBounds = new Rectangle(
@@ -91,9 +98,20 @@ public class Board
 		return polySquare;
 	    }
 	}
-	return squares[col][row];
+	return squares[col+MARGIN][row+MARGIN];
     }
 
+    // -- setters -- //
+    private void setFalling(Poly falling) {
+	this.falling = falling;
+    }
+
+    private void setFallingPos(Point fallingPos) {
+	this.fallingPos = fallingPos;
+    }
+
+
+    // -- BOARD OPERATIONS -- //
     public void randomBoard() {
 	for (int col = 0; col < width; col++) {
 	    for (int row = 0; row < height; row++) {
@@ -102,6 +120,7 @@ public class Board
 	}
 	notifyListeners();
     }
+
 
     public void tick(){
 	if (getFalling() != null && getFallingPos().y != (height-getFalling().getHeight())) {
@@ -113,16 +132,34 @@ public class Board
 	notifyListeners();
     }
 
+
     private void moveFalling(){
 	Point newPos = getFallingPos();
 	newPos.y += 1;
 	setFallingPos(newPos);
     }
 
+
     private void setFalling(){
-	this.falling = tetrominoMaker.getPoly(RND.nextInt(SquareType.values().length-1));
+	this.falling = tetrominoMaker.getPoly(
+		RND.nextInt(SquareType.values().length-2)
+	);
 	this.fallingPos = new Point((width/2) - 1, 0);
     }
+
+
+    public void move(Direction direction) {
+	Point newPos = getFallingPos();
+	newPos.x += (direction == Direction.LEFT ? 1 : -1);
+	setFallingPos(newPos);
+	notifyListeners();
+    }
+
+    private boolean hasCollision() {
+
+    }
+
+    // -- UPDATE LISTENERS -- //
 
     public void addBoardListener(BoardListener bl){
 	listeners.add(bl);
@@ -132,9 +169,5 @@ public class Board
 	for (BoardListener bl : listeners){
 	    bl.boardChanged();
 	}
-    }
-    public static void main(String[] args) {
-	Board board = new Board(10, 20);
-	board.randomBoard();
     }
 }

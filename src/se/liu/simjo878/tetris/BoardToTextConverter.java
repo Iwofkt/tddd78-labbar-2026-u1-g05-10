@@ -16,6 +16,7 @@ public class BoardToTextConverter
 		    case O -> builder.append(" O ");
 		    case S -> builder.append(" S ");
 		    case T -> builder.append(" T ");
+		    case OUTSIDE ->  builder.append("#");
 		    default -> builder.append(" UNKNOWN ");
 		}
 	    }

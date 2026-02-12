@@ -37,8 +37,8 @@ public class TetrisComponent extends JComponent implements BoardListener
 
     @Override public Dimension getPreferredSize() {
 	// Beräkna storlek baserat på antal kolumner och rader
-	int widthInPixels = board.getWidth() * (SQUARE_SIZE + MARGIN) + MARGIN;
-	int heightInPixels = board.getHeight() * (SQUARE_SIZE + MARGIN) + MARGIN;
+	int widthInPixels = board.getWidth() * (SQUARE_SIZE + MARGIN) + MARGIN*2;
+	int heightInPixels = board.getHeight() * (SQUARE_SIZE + MARGIN) + MARGIN*2;
 	return new Dimension(widthInPixels, heightInPixels);
     }
 

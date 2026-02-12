@@ -7,7 +7,7 @@ import java.util.Random;
 public enum SquareType {
 // ctrl-Q för Javadoc
 // crtl-J för live templates
-    EMPTY, I, O, T, S, Z, J, L;
+    OUTSIDE, EMPTY, I, O, T, S, Z, J, L;
 
     public static void main(String[] args) {
         Random rnd = new Random();
