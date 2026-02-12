@@ -2,11 +2,13 @@ package se.liu.simjo878.tetris;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class OldTetrisViewer
 {
     private Board board;
     private BoardToTextConverter converter = new BoardToTextConverter();
+    private final static int UPDATE_INTERVAL = 1000;
 
     public OldTetrisViewer(Board board)
     {
@@ -23,5 +25,14 @@ public class OldTetrisViewer
 	frame.add(textArea, BorderLayout.CENTER);
 	frame.pack();
 	frame.setVisible(true);
+
+	Timer timer = new Timer(UPDATE_INTERVAL, e -> {
+	    board.randomBoard();
+	    textArea.setText(converter.convertToText(board));
+	});
+
+
+	timer.setCoalesce(true);
+	timer.start();
     }
 }

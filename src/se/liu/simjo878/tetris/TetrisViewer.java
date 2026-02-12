@@ -30,7 +30,7 @@ public class TetrisViewer
 	Timer timer = new Timer(UPDATE_INTERVAL, new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		board.randomBoard();
+		board.tick();
 	    }
 	});
 

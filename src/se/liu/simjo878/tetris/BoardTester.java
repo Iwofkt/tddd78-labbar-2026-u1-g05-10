@@ -7,5 +7,6 @@ public class BoardTester
 
 	TetrisViewer viewer = new TetrisViewer(board);
 	viewer.show();
+
     }
 }

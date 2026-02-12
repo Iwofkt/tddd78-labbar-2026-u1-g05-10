@@ -15,10 +15,11 @@ public class Board
     private int width;
     private int height;
 
-    private Poly falling;
-    private Point fallingPos;
+    private Poly falling = null;
+    private Point fallingPos = null;
 
     private List<BoardListener> listeners;
+    private final TetrominoMaker tetrominoMaker;
 
 
 
@@ -32,11 +33,13 @@ public class Board
 		squares[col][row] = SquareType.EMPTY;
 	    }
 	}
-
-	final TetrominoMaker tetrominoMaker = new TetrominoMaker();
+	/*
 	this.falling = tetrominoMaker.getPoly(DEFAULT_POLY_INDEX);
 	this.fallingPos = new Point((width/2) - 1, (height/2) - 1);
+	*/
 	this.listeners = new ArrayList<>();
+	this.tetrominoMaker = new TetrominoMaker();
+
     }
 
     public int getWidth() {
@@ -56,10 +59,16 @@ public class Board
 	return falling;
     }
 
+    private void setFalling(Poly falling) {
+	this.falling = falling;
+    }
     public Point getFallingPos() {
 	return fallingPos;
     }
 
+    private void setFallingPos(Point fallingPos) {
+	this.fallingPos = fallingPos;
+    }
     public SquareType getVisibleSquareAt(int col, int row) {
 	if (falling == null) {
 	    return squares[col][row];
@@ -92,6 +101,27 @@ public class Board
 	    }
 	}
 	notifyListeners();
+    }
+
+    public void tick(){
+	if (getFalling() != null && getFallingPos().y != (height-getFalling().getHeight())) {
+	    moveFalling();
+	}
+	else {
+	    setFalling();
+	}
+	notifyListeners();
+    }
+
+    private void moveFalling(){
+	Point newpos = getFallingPos();
+	newpos.y += 1;
+	setFallingPos(newpos);
+    }
+
+    private void setFalling(){
+	this.falling = tetrominoMaker.getPoly(RND.nextInt(SquareType.values().length-1));
+	this.fallingPos = new Point((width/2) - 1, 0);
     }
 
     public void addBoardListener(BoardListener bl){
