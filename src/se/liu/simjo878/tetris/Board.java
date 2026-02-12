@@ -114,9 +114,9 @@ public class Board
     }
 
     private void moveFalling(){
-	Point newpos = getFallingPos();
-	newpos.y += 1;
-	setFallingPos(newpos);
+	Point newPos = getFallingPos();
+	newPos.y += 1;
+	setFallingPos(newPos);
     }
 
     private void setFalling(){
