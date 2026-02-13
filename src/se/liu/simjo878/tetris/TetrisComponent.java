@@ -18,7 +18,7 @@ public class TetrisComponent extends JComponent implements BoardListener
 
     private static EnumMap<SquareType, Color> createColorMap() {
 	EnumMap<SquareType, Color> colorMap = new EnumMap<>(SquareType.class);
-	colorMap.put(SquareType.EMPTY, Color.BLACK);
+	colorMap.put(SquareType.EMPTY, new Color(0, 0, 50)); // very dark blue
 	colorMap.put(SquareType.I, Color.CYAN);
 	colorMap.put(SquareType.O, Color.YELLOW);
 	colorMap.put(SquareType.T, Color.MAGENTA);
@@ -74,21 +74,39 @@ public class TetrisComponent extends JComponent implements BoardListener
 	}
     }
 
+    private Color lighten(Color color, double factor) {
+	int r = (int)Math.min(255, color.getRed() + 255 * factor);
+	int g = (int)Math.min(255, color.getGreen() + 255 * factor);
+	int b = (int)Math.min(255, color.getBlue() + 255 * factor);
+	return new Color(r, g, b);
+    }
+
+
     private void drawSquare(Graphics2D g2d, int col, int row, SquareType squareType) {
-	// Konvertera brädekoordinater (col, row) till pixelkoordinater (x, y)
 	int pixelX = MARGIN + col * (SQUARE_SIZE + MARGIN);
 	int pixelY = MARGIN + row * (SQUARE_SIZE + MARGIN);
 
-	// Hämta färg från mappningen
 	Color color = SQUARE_COLORS.get(squareType);
-	if (color == null) {
-	    color = Color.BLACK;
-	}
+	if (color == null) color = Color.BLACK;
 
-	// Rita fylld kvadrat
+	// Rita fyllning
 	g2d.setColor(color);
-	g2d.fillRect(pixelX, pixelY, SQUARE_SIZE, SQUARE_SIZE);
+	g2d.fillRect(pixelX + 2, pixelY + 2, SQUARE_SIZE - 4, SQUARE_SIZE - 4);
+
+	// Ljuskant if det är ett block
+	if (squareType != SquareType.EMPTY) {
+	    Color borderColor = lighten(color, 0.5);
+	    g2d.setColor(borderColor);
+	    g2d.setStroke(new BasicStroke(4));
+	    g2d.drawRect(pixelX + 1, pixelY + 1, SQUARE_SIZE - 4, SQUARE_SIZE - 4);
+	}
+	else{
+	    g2d.setStroke(new BasicStroke(MARGIN-1));
+	    g2d.drawRect(pixelX + 1, pixelY + 1, SQUARE_SIZE - 2, SQUARE_SIZE - 2);
+	}
     }
+
+
 
     private void drawFallingPoly(Graphics2D g2d) {
 	Poly falling = board.getFalling();
