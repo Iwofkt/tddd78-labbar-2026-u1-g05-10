@@ -1,11 +1,10 @@
 package se.liu.simjo878.tetris;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class Board
@@ -26,6 +25,9 @@ public class Board
 
     private List<BoardListener> listeners;
     private final TetrominoMaker tetrominoMaker;
+
+    private static final Map<Integer,Integer> POINT_MAP = Map.of(0, 0,1, 40, 2, 100, 3, 300, 4, 1200);
+    private int points = 0;
 
     // -- CONSTURCTOR -- //
 
@@ -103,7 +105,13 @@ public class Board
 	return squares[col+MARGIN][row+MARGIN];
     }
 
-    // -- setters -- //
+    public int getPoints() {
+	return points;
+    }
+
+    // -- SETTERS -- //
+
+
     private void setFalling(Poly falling) {
 	this.falling = falling;
     }
@@ -112,6 +120,9 @@ public class Board
 	this.fallingPos = fallingPos;
     }
 
+    private void setPoints(int points) {
+	this.points = points;
+    }
 
     // -- BOARD OPERATIONS -- //
 
@@ -188,6 +199,8 @@ public class Board
 
     private void removeFullRows() {
 	// Gå igenom varje rad i den "synliga" spelplanen
+
+	int rowAmount = 0;
 	for (int row = 0; row < height; row++) {
 	    boolean full = true;
 
@@ -213,8 +226,10 @@ public class Board
 
 		// Efter att ha tagit bort en rad, kolla samma rad igen
 		row--;
+		rowAmount++;
 	    }
 	}
+	setPoints(getPoints() + POINT_MAP.get(rowAmount));
     }
 
     //-- game interactions

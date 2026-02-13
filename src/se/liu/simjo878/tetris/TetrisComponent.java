@@ -62,6 +62,9 @@ public class TetrisComponent extends JComponent implements BoardListener
 
 	// Rita fallande block
 	drawFallingPoly(g2d);
+
+	// Rita poäng (uppe till höger)
+	drawScore(g2d);
     }
 
     private void drawBoard(Graphics2D g2d) {
@@ -136,4 +139,24 @@ public class TetrisComponent extends JComponent implements BoardListener
 	    }
 	}
     }
+
+    private void drawScore(Graphics2D g2d) {
+	String scoreText = "Points: " + board.getPoints();
+
+	// Set font (adjust size if needed)
+	Font font = new Font("Arial", Font.BOLD, 20);
+	g2d.setFont(font);
+
+	// Get text width to align right
+	FontMetrics metrics = g2d.getFontMetrics(font);
+	int textWidth = metrics.stringWidth(scoreText);
+	int textHeight = metrics.getAscent();
+
+	int x = getWidth() - textWidth - 10;  // 10px padding from right edge
+	int y = textHeight + 10;              // 10px padding from top
+
+	g2d.setColor(Color.WHITE);
+	g2d.drawString(scoreText, x, y);
+    }
+
 }
