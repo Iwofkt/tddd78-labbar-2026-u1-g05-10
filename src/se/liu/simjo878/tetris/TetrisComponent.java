@@ -1,17 +1,23 @@
 package se.liu.simjo878.tetris;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.EnumMap;
 
 public class TetrisComponent extends JComponent implements BoardListener
 {
-    private Board board;
+    private final Board board;
+
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     // Grafiska konstanter
 
     private final static int SQUARE_SIZE = 40;  // pixelstorlek per ruta
     private final static int MARGIN = 5;        // mellanrum mellan rutor
+    private final static int TEXT_MARGIN = 10;
 
     // Färgkarta för SquareTypes
     private final static EnumMap<SquareType, Color> SQUARE_COLORS = createColorMap();
@@ -28,6 +34,8 @@ public class TetrisComponent extends JComponent implements BoardListener
 	colorMap.put(SquareType.L, Color.ORANGE);
 	return colorMap;
     }
+
+    // -- CONSTRUCTOR  -- //
 
     public TetrisComponent(Board board) {
 	this.board = board;
@@ -58,17 +66,23 @@ public class TetrisComponent extends JComponent implements BoardListener
 	g2d.fillRect(0, 0, getWidth(), getHeight());
 
 	// Rita fasta block
-	drawBoard(g2d);
+	if (!board.getGameOver()) {
+	    drawBoard(g2d);
 
-	// Rita fallande block
-	drawFallingPoly(g2d);
+	    // Rita fallande block
+	    drawFallingPoly(g2d);
 
-	// Rita poäng (uppe till höger)
-	drawScore(g2d);
+	    // Rita poäng (uppe till höger)
+	    drawCurrentScore(g2d);
+	}
+	else{
+	    drawGameOver(g2d);
+	}
     }
 
     private void drawBoard(Graphics2D g2d) {
 	// Loopa igenom alla positioner på brädet
+
 	for (int row = 0; row < board.getHeight(); row++) {        // Rad för rad
 	    for (int col = 0; col < board.getWidth(); col++) {     // Kolumn för kolumn
 		SquareType squareType = board.getSquareType(col, row);
@@ -76,6 +90,8 @@ public class TetrisComponent extends JComponent implements BoardListener
 	    }
 	}
     }
+
+    // -- DRAW BOARD HELPER FUNCTIONS -- //
 
     private Color lighten(Color color, double factor) {
 	int r = (int)Math.min(255, color.getRed() + 255 * factor);
@@ -109,8 +125,6 @@ public class TetrisComponent extends JComponent implements BoardListener
 	}
     }
 
-
-
     private void drawFallingPoly(Graphics2D g2d) {
 	Poly falling = board.getFalling();
 	if (falling == null) {
@@ -140,7 +154,7 @@ public class TetrisComponent extends JComponent implements BoardListener
 	}
     }
 
-    private void drawScore(Graphics2D g2d) {
+    private void drawCurrentScore(Graphics2D g2d) {
 	String scoreText = "Points: " + board.getPoints();
 
 	// Set font (adjust size if needed)
@@ -152,11 +166,31 @@ public class TetrisComponent extends JComponent implements BoardListener
 	int textWidth = metrics.stringWidth(scoreText);
 	int textHeight = metrics.getAscent();
 
-	int x = getWidth() - textWidth - 10;  // 10px padding from right edge
-	int y = textHeight + 10;              // 10px padding from top
+	int x = getWidth() - textWidth - TEXT_MARGIN;
+	int y = textHeight + TEXT_MARGIN;
 
 	g2d.setColor(Color.WHITE);
 	g2d.drawString(scoreText, x, y);
     }
 
+    private void drawGameOver(Graphics2D g2d) {
+	String scoreText = "Points: " + board.getPoints();
+	//String stringHighscoreList = gson.toJson(myHighscoreList);
+
+	// Set font (adjust size if needed)
+	Font font = new Font("Arial", Font.BOLD, 40);
+	g2d.setFont(font);
+
+	// Get text width to align right
+	FontMetrics metrics = g2d.getFontMetrics(font);
+	int textWidth = metrics.stringWidth(scoreText);
+	int textHeight = metrics.getAscent();
+
+	int x = getWidth()/2 - textWidth/2;
+	int y = getHeight()/2 + TEXT_MARGIN;
+
+	g2d.setColor(Color.WHITE);
+	g2d.drawString(scoreText, x, y);
+	//g2d.drawString(stringHighscoreList, x, y+textHeight*2);
+    }
 }

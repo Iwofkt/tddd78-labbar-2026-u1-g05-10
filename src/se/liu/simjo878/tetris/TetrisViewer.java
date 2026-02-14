@@ -1,5 +1,8 @@
 package se.liu.simjo878.tetris;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,21 +19,30 @@ public class TetrisViewer
     }
 
     public void show() {
+
+	// -- FRAME INIT -- //
+
 	JFrame frame = new JFrame("Tetris Viewer");
 	frame.setLayout(new BorderLayout());
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+	// -- ADD GAME -- //
 
 	TetrisComponent tetrisComponent = new TetrisComponent(board);
 
 	frame.add(tetrisComponent, BorderLayout.CENTER);
 
 	// -- MENU BAR -- //
+
 	final JMenuBar bar = new JMenuBar();
 
-	final JMenu file = new JMenu("File");
-	final JMenuItem avsluta = new JMenuItem("Avsluta", 'O');
-	file.add(avsluta);
-	avsluta.addActionListener(new QuitAction(0));
+	final JMenu file = new JMenu("Game");
+	final JMenuItem quitApp = new JMenuItem("Avsluta application", 'Q');
+	final JMenuItem quitRound = new JMenuItem("Avbryt omgång", 'O');
+	file.add(quitApp);
+	file.add(quitRound);
+	quitRound.addActionListener(new GameOverAction(0));
+	quitApp.addActionListener(new QuitAction(0));
 	bar.add(file);
 
 	frame.setJMenuBar(bar);
@@ -119,6 +131,19 @@ public class TetrisViewer
 
 	@Override public void actionPerformed(final ActionEvent e) {
 	    System.exit(exitCode);
+	}
+    }
+
+    private class GameOverAction extends AbstractAction
+    {
+	private final int exitCode;
+
+	private GameOverAction(int exitCode) {
+	    this.exitCode = exitCode;
+	}
+
+	@Override public void actionPerformed(final ActionEvent e) {
+	    board.setGameOver(true);
 	}
     }
 }

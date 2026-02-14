@@ -19,7 +19,6 @@ public class TetrisLauncher
 	    splashFrame.setLocationRelativeTo(null);
 	    splashFrame.setVisible(true);
 
-	    // --- Timer for 2 seconds ---
 	    Timer timer = new Timer(SPLASH_TIME, e -> {
 
 		splashFrame.dispose();

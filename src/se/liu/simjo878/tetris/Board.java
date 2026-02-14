@@ -109,6 +109,10 @@ public class Board
 	return points;
     }
 
+    public boolean getGameOver() {
+	return gameOver;
+    }
+
     // -- SETTERS -- //
 
 
@@ -126,6 +130,11 @@ public class Board
 
     // -- BOARD OPERATIONS -- //
 
+
+    public void setGameOver(boolean gameOver) {
+	this.gameOver = gameOver;
+	notifyListeners();
+    }
 
     public void randomBoard() {
 	for (int col = 0; col < width; col++) {
@@ -156,7 +165,7 @@ public class Board
 	else {
 	    setFalling();
 	    if (hasCollision()){
-		gameOver = true;
+		setGameOver(true);
 	    }
 	}
 	notifyListeners();
