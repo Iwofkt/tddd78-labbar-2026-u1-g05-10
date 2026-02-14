@@ -18,7 +18,7 @@ public class HighscoreList {
 	highscores = new ArrayList<>();
     }
 
-    public void addScore(Highscore score) {
+    public void addScore(Highscore score) throws IOException {
 	highscores.add(score);
 	save(); // Spara automatiskt när listan ändras
     }
@@ -35,33 +35,25 @@ public class HighscoreList {
 
     // -- SAVE & LOAD HIGHSCORES -- //
 
-    public void save() {
+    public void save() throws IOException {
 	saveToFile(getFullPath(DEFAULT_FILENAME));
     }
 
-    public void saveToFile(String filename) {
+    public void saveToFile(String filename) throws IOException {
 	Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
 	try (FileWriter writer = new FileWriter(filename)) {
 	    gson.toJson(this, writer);
 	}
-	catch (IOException e) {
-	    e.printStackTrace();
-	}
     }
 
-    public static HighscoreList load() {
+    public static HighscoreList load() throws IOException {
 	return loadFromFile(getFullPath(DEFAULT_FILENAME));
     }
 
-    public static HighscoreList loadFromFile(String filename) {
+    public static HighscoreList loadFromFile(String filename) throws IOException {
 	Gson gson = new Gson();
-
 	try (FileReader reader = new FileReader(filename)) {
 	    return gson.fromJson(reader, HighscoreList.class);
-	} catch (IOException e) {
-	    e.printStackTrace();
-	    return new HighscoreList(); // om filen inte finns
 	}
     }
 

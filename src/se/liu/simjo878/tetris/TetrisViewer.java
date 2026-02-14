@@ -1,12 +1,9 @@
 package se.liu.simjo878.tetris;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class TetrisViewer
 {
@@ -54,7 +51,7 @@ public class TetrisViewer
 
 	// -- MENU BAR -- //
 
-	final JMenuBar bar = new JMenuBar();
+	final JMenuBar gameTopBar = new JMenuBar();
 
 	final JMenu file = new JMenu("Game");
 	final JMenuItem quitApp = new JMenuItem("Avsluta application", 'Q');
@@ -63,25 +60,45 @@ public class TetrisViewer
 	file.add(quitRound);
 	quitRound.addActionListener(new GameOverAction(0));
 	quitApp.addActionListener(e -> attemptExit(frame));
-	bar.add(file);
+	gameTopBar.add(file);
 
-	frame.setJMenuBar(bar);
+	frame.setJMenuBar(gameTopBar);
 
 	frame.pack();
 	frame.setVisible(true);
 
 	// -- TIMER-- //
 
-	Timer timer = new Timer(UPDATE_INTERVAL, new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		board.tick();
+	Timer timer = new Timer(UPDATE_INTERVAL, e -> {
+	    board.tick();
 
-		// save highscore once
-		if (board.getGameOver() && !highscoreSaved) {
-		    highscoreList.addScore(new Highscore("Player", board.getPoints()));
-		    highscoreSaved = true;
+// save highscore once
+	    if (board.getGameOver() && !highscoreSaved) {
+		boolean saved = false;
+
+		while (!saved) {
+		    try {
+			highscoreList.addScore(new Highscore("Player", board.getPoints()));
+			saved = true; // lyckades spara
+		    } catch (IOException ex) {
+			ex.printStackTrace();
+
+			// Visa popup med fråga om användaren vill försöka igen
+			int result = javax.swing.JOptionPane.showConfirmDialog(
+				null,
+				"Ett fel uppstod när highscore skulle sparas:\n" + ex.getMessage() +
+				"\nVill du försöka igen?",
+				"Fel vid sparning",
+				javax.swing.JOptionPane.YES_NO_OPTION,
+				javax.swing.JOptionPane.ERROR_MESSAGE
+			);
+
+			if (result != javax.swing.JOptionPane.YES_OPTION) {
+			    saved = true;
+			}
+		    }
 		}
+		highscoreSaved = true;
 	    }
 	});
 
