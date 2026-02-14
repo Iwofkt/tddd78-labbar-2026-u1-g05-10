@@ -23,8 +23,10 @@ public class TetrisLauncher
 
 		splashFrame.dispose();
 
+		HighscoreList highscoreList = HighscoreList.load();
+
 		Board board = new Board(12, 25);
-		TetrisViewer viewer = new TetrisViewer(board);
+		TetrisViewer viewer = new TetrisViewer(board,  highscoreList);
 		viewer.show();
 
 	    });

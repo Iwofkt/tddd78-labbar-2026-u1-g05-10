@@ -11,11 +11,31 @@ import java.awt.event.ActionListener;
 public class TetrisViewer
 {
     private Board board;
+    private final HighscoreList highscoreList;
+    private boolean highscoreSaved = false;
     private final static int UPDATE_INTERVAL = 200;
 
-    public TetrisViewer(Board board)
+    public TetrisViewer(Board board, HighscoreList highscoreList)
     {
 	this.board = board;
+	this.highscoreList = highscoreList;
+    }
+
+    // Quiting the program with ctrl Q
+    private void attemptExit(JFrame frame) {
+	int choice = JOptionPane.showOptionDialog(
+		frame,
+		"Är du säker på att du vill avsluta applikationen?",
+		"Avsluta",
+		JOptionPane.YES_NO_OPTION,
+		JOptionPane.QUESTION_MESSAGE,
+		null,
+		new Object[] { "Ja", "Nej" },
+		"Nej");
+
+	if (choice == JOptionPane.YES_OPTION) {
+	    System.exit(0); // Avsluta programmet
+	}
     }
 
     public void show() {
@@ -28,7 +48,7 @@ public class TetrisViewer
 
 	// -- ADD GAME -- //
 
-	TetrisComponent tetrisComponent = new TetrisComponent(board);
+	TetrisComponent tetrisComponent = new TetrisComponent(board,  highscoreList);
 
 	frame.add(tetrisComponent, BorderLayout.CENTER);
 
@@ -42,7 +62,7 @@ public class TetrisViewer
 	file.add(quitApp);
 	file.add(quitRound);
 	quitRound.addActionListener(new GameOverAction(0));
-	quitApp.addActionListener(new QuitAction(0));
+	quitApp.addActionListener(e -> attemptExit(frame));
 	bar.add(file);
 
 	frame.setJMenuBar(bar);
@@ -56,6 +76,12 @@ public class TetrisViewer
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		board.tick();
+
+		// save highscore once
+		if (board.getGameOver() && !highscoreSaved) {
+		    highscoreList.addScore(new Highscore("Player", board.getPoints()));
+		    highscoreSaved = true;
+		}
 	    }
 	});
 
@@ -120,6 +146,19 @@ public class TetrisViewer
     }
 
 
+    private class GameOverAction extends AbstractAction
+    {
+	private final int exitCode;
+
+	private GameOverAction(int exitCode) {
+	    this.exitCode = exitCode;
+	}
+
+	@Override public void actionPerformed(final ActionEvent e) {
+	    board.setGameOver(true);
+	}
+    }
+
     // Quiting the program with ctrl Q
     private class QuitAction extends AbstractAction
     {
@@ -131,19 +170,6 @@ public class TetrisViewer
 
 	@Override public void actionPerformed(final ActionEvent e) {
 	    System.exit(exitCode);
-	}
-    }
-
-    private class GameOverAction extends AbstractAction
-    {
-	private final int exitCode;
-
-	private GameOverAction(int exitCode) {
-	    this.exitCode = exitCode;
-	}
-
-	@Override public void actionPerformed(final ActionEvent e) {
-	    board.setGameOver(true);
 	}
     }
 }
