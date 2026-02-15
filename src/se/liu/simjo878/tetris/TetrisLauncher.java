@@ -1,7 +1,10 @@
 package se.liu.simjo878.tetris;
 
+import se.liu.simjo878.tetris.GUI.SplashScreen;
+import se.liu.simjo878.tetris.GUI.TetrisViewer;
+import se.liu.simjo878.tetris.Highscore.HighscoreList;
+
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 
 public class TetrisLauncher
@@ -21,7 +24,7 @@ public class TetrisLauncher
 	    HighscoreList highscoreList = loadHighscores();
 
 	    Board board = new Board(12, 25);
-	    TetrisViewer viewer = new TetrisViewer(board,  highscoreList);
+	    TetrisViewer viewer = new TetrisViewer(board, highscoreList);
 	    viewer.show();
 
 	});

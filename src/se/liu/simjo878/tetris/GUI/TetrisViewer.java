@@ -1,4 +1,9 @@
-package se.liu.simjo878.tetris;
+package se.liu.simjo878.tetris.GUI;
+
+import se.liu.simjo878.tetris.Board;
+import se.liu.simjo878.tetris.Direction;
+import se.liu.simjo878.tetris.Highscore.Highscore;
+import se.liu.simjo878.tetris.Highscore.HighscoreList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +40,7 @@ public class TetrisViewer
 
 	// -- ADD GAME -- //
 
-	TetrisComponent tetrisComponent = new TetrisComponent(board,  highscoreList);
+	TetrisComponent tetrisComponent = new TetrisComponent(board, highscoreList);
 
 	frame.add(tetrisComponent, BorderLayout.CENTER);
 

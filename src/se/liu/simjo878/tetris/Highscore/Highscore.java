@@ -1,4 +1,4 @@
-package se.liu.simjo878.tetris;
+package se.liu.simjo878.tetris.Highscore;
 
 public class Highscore {
 

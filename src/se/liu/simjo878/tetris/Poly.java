@@ -2,6 +2,7 @@ package se.liu.simjo878.tetris;
 
 public class Poly
 {
+
     private SquareType[][] squares;
 
     public Poly(SquareType[][] squares) {

@@ -1,4 +1,6 @@
-package se.liu.simjo878.tetris;
+package se.liu.simjo878.tetris.GUI;
+
+import se.liu.simjo878.tetris.Board;
 
 public class BoardToTextConverter
 {

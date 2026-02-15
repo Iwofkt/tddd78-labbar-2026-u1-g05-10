@@ -1,4 +1,12 @@
-package se.liu.simjo878.tetris;
+package se.liu.simjo878.tetris.GUI;
+
+import se.liu.simjo878.tetris.Board;
+import se.liu.simjo878.tetris.BoardListener;
+import se.liu.simjo878.tetris.Highscore.Highscore;
+import se.liu.simjo878.tetris.Highscore.HighscoreList;
+import se.liu.simjo878.tetris.Poly;
+import se.liu.simjo878.tetris.PowerUps;
+import se.liu.simjo878.tetris.SquareType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +23,7 @@ public class TetrisComponent extends JComponent implements BoardListener
     private final static int MARGIN = 3;        // mellanrum mellan rutor
     private final static int TEXT_MARGIN = 10;
     private final static float MENU_TRANSPARENCY = 0.4F;
+    private final static float GHOST_TRANSPARENCY = 0.2F;
     private HighscoreList myHighscoreList;
 
 
@@ -68,8 +77,13 @@ public class TetrisComponent extends JComponent implements BoardListener
 
 	drawBoard(g2d);
 
-	// Rita fallande block
+	if (board.getPowerUp() == PowerUps.FALLTHROUGH){
+	    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, GHOST_TRANSPARENCY));
+	}
+
 	drawFallingPoly(g2d);
+
+	g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 
 	// Rita poäng (uppe till höger)
 	drawStats(g2d, "Points: " + board.getPoints(), 1);
@@ -77,7 +91,7 @@ public class TetrisComponent extends JComponent implements BoardListener
 	drawStats(g2d, "Level: " + board.getLevel(), 3);
 
 	if (board.getGameOver()){
-	    overlay(g2d, 0.3F, new Color(70, 0, 0));
+	    overlay(g2d, MENU_TRANSPARENCY, new Color(70, 0, 0));
 	    drawTitle(g2d, "GAME OVER", Color.RED);
 	    drawGameStats(g2d);
 	}
@@ -146,7 +160,6 @@ public class TetrisComponent extends JComponent implements BoardListener
 	if (falling == null) {
 	    return;
 	}
-
 	Point fallingPos = board.getFallingPos();
 	int startCol = fallingPos.x;  // startkolumn
 	int startRow = fallingPos.y;  // startrad

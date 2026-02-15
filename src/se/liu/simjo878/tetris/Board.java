@@ -1,5 +1,9 @@
 package se.liu.simjo878.tetris;
 
+import se.liu.simjo878.tetris.FallHandlers.DefaultHandler;
+import se.liu.simjo878.tetris.FallHandlers.FallHandler;
+import se.liu.simjo878.tetris.FallHandlers.Fallthrough;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +28,10 @@ public class Board
 
     private Poly falling = null;
     private Point fallingPos = null;
+    private FallHandler fallHandler;
+    private final FallHandler defaultHandler = new DefaultHandler();
+    private final Fallthrough fallthrough = new Fallthrough();
+    private PowerUps powerUp = PowerUps.NORMAL;
 
     private List<BoardListener> listeners;
     private final TetrominoMaker tetrominoMaker;
@@ -36,6 +44,7 @@ public class Board
     public Board(int width, int height) {
 	this.width = width;
 	this.height = height;
+	this.fallHandler = defaultHandler;
 
 	squares = new SquareType[width + DOUBLE_MARGIN][height + DOUBLE_MARGIN];
 
@@ -69,8 +78,11 @@ public class Board
 	return height;  // antal rader
     }
 
+    public int getMargin() {
+	return MARGIN;
+    }
+
     public SquareType getSquareType(int col, int row) {
-	// col = x-koordinat (kolumn), row = y-koordinat (rad)
 	return squares[col+MARGIN][row+MARGIN];
     }
 
@@ -123,12 +135,11 @@ public class Board
 	return level;
     }
 
-    // -- SETTERS -- //
-
-
-    private void setFalling(Poly falling) {
-	this.falling = falling;
+    public PowerUps getPowerUp() {
+	return powerUp;
     }
+
+    // -- SETTERS -- //
 
     private void setFallingPos(Point fallingPos) {
 	this.fallingPos = fallingPos;
@@ -173,7 +184,7 @@ public class Board
 
 	if (getFalling() != null) {
 	    moveFalling(1);
-	    if (hasCollision()){
+	    if (fallHandler.hasCollision(this)){
 		moveFalling(-1);
 		addFallingToBoard();
 		removeFullRows();
@@ -182,8 +193,8 @@ public class Board
 	}
 
 	else {
-	    setFalling();
-	    if (hasCollision()){
+	    newFalling();
+	    if (fallHandler.hasCollision(this)){
 		setGameOver(true);
 	    }
 	}
@@ -202,11 +213,23 @@ public class Board
     }
 
 
-    private void setFalling(){
+    private void newFalling(){
 	this.falling = tetrominoMaker.getPoly(
 		RND.nextInt(SquareType.values().length-NONE_SQUARES_MARGIN)
 	);
 	this.fallingPos = new Point((width/2) - 1, 0);
+
+
+	switch (RND.nextInt(0, 2)) {
+	    case 1:
+		fallHandler = fallthrough;
+		powerUp = PowerUps.FALLTHROUGH;
+		break;
+	    default:
+		fallHandler = defaultHandler;
+		powerUp = PowerUps.NORMAL;
+	}
+
     }
 
 
@@ -264,11 +287,16 @@ public class Board
 
     public void move(Direction dir) {
 	Point newPos = getFallingPos();
+
+	if (newPos == null){
+	    return;
+	}
+
 	newPos.x += (dir == Direction.LEFT ? 1 : -1);
 	setFallingPos(newPos);
 
 	// does the move result in a collision?
-	if (hasCollision()){
+	if (fallHandler.hasCollision(this)){
 	    newPos = getFallingPos();
 	    newPos.x += (dir == Direction.LEFT ? -1 : 1);
 	    setFallingPos(newPos);
@@ -287,7 +315,7 @@ public class Board
 	falling = rotated;
 
 	// Om rotationen leder till kollision, revert
-	if (hasCollision()) {
+	if (fallHandler.hasCollision(this)) {
 	    falling = currentFalling;
 	}
 	notifyListeners();
@@ -304,7 +332,7 @@ public class Board
 	    newPos.y += 1;
 	    setFallingPos(newPos);
 
-	    if (hasCollision()) {
+	    if (fallHandler.hasCollision(this)) {
 		newPos.y -= 1;
 		setFallingPos(newPos);
 		break;
@@ -313,7 +341,7 @@ public class Board
 	notifyListeners();
     }
 
-
+/*
     private boolean hasCollision() {
 	if (falling == null) {
 	    return false;
@@ -342,7 +370,7 @@ public class Board
 	}
 	return false;
     }
-
+*/
 
     // -- UPDATE LISTENERS -- //
 

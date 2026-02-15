@@ -1,4 +1,4 @@
-package se.liu.simjo878.tetris;
+package se.liu.simjo878.tetris.Highscore;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

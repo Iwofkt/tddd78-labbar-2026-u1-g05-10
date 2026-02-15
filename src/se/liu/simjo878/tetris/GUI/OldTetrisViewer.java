@@ -1,8 +1,9 @@
-package se.liu.simjo878.tetris;
+package se.liu.simjo878.tetris.GUI;
+
+import se.liu.simjo878.tetris.Board;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 public class OldTetrisViewer
 {
