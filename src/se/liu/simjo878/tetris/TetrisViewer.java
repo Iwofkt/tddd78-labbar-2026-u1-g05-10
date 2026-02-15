@@ -10,7 +10,10 @@ public class TetrisViewer
     private Board board;
     private final HighscoreList highscoreList;
     private boolean highscoreSaved = false;
-    private final static int UPDATE_INTERVAL = 200;
+    private int startUpdateInterval = 250;
+    private long startTime;
+
+    private static int LEVEL_UP_TIME = 50;
 
     public TetrisViewer(Board board, HighscoreList highscoreList)
     {
@@ -46,7 +49,7 @@ public class TetrisViewer
 	file.add(pauseGame);
 	quitRound.addActionListener(new GameOverAction(0));
 	quitApp.addActionListener(new QuitAction());
-	pauseGame.addActionListener(new pauseAction());
+	pauseGame.addActionListener(new PauseAction());
 	gameTopBar.add(file);
 
 	frame.setJMenuBar(gameTopBar);
@@ -56,42 +59,24 @@ public class TetrisViewer
 
 	// -- TIMER-- //
 
-	Timer timer = new Timer(UPDATE_INTERVAL, e -> {
+	startTime = System.currentTimeMillis();
+
+	Timer timer = new Timer(startUpdateInterval, e -> {
+
+	    if (!board.getGameOver()) {
+		updateSpeed((Timer)e.getSource());
+	    }
+
 	    board.tick();
 
 	    // save highscore once
 	    if (board.getGameOver() && !highscoreSaved) {
-		boolean saved = false;
-
-		while (!saved) {
-		    try {
-			highscoreList.addScore(new Highscore("Player", board.getPoints()));
-			saved = true; // lyckades spara
-		    } catch (IOException ex) {
-			ex.printStackTrace();
-
-			// Visa popup med fråga om användaren vill försöka igen
-			int result = javax.swing.JOptionPane.showConfirmDialog(
-				null,
-				"Ett fel uppstod när highscore skulle sparas:\n" + ex.getMessage() +
-				"\nVill du försöka igen?",
-				"Fel vid sparning",
-				javax.swing.JOptionPane.YES_NO_OPTION,
-				javax.swing.JOptionPane.ERROR_MESSAGE
-			);
-
-			if (result != javax.swing.JOptionPane.YES_OPTION) {
-			    saved = true;
-			}
-		    }
-		}
-		highscoreSaved = true;
+		saveHighscore();
 	    }
 	});
 
 	timer.setCoalesce(true);
 	timer.start();
-
 
 	// --- ACTION SETUP --//
 
@@ -117,6 +102,51 @@ public class TetrisViewer
 	act.put("rotateright", new RotateAction(Direction.RIGHT));
 	act.put("rotateleft", new RotateAction(Direction.LEFT));
 	act.put("quit", new QuitAction());
+    }
+
+    // -- TIMER HELPER FUNCTIONS -- //
+
+    private void updateSpeed(Timer timer) {
+	long elapsedSeconds = (System.currentTimeMillis() - startTime) / 1000;
+
+	int newLevel = (int)(elapsedSeconds / LEVEL_UP_TIME);
+
+	if (newLevel > board.getLevel()) {
+
+	    board.setLevel(newLevel);
+
+	    int newDelay = Math.max(100, startUpdateInterval - (newLevel * 50));
+	    timer.setDelay(newDelay);
+	}
+    }
+
+
+    private void saveHighscore() {
+	boolean saved = false;
+
+	while (!saved) {
+	    try {
+		highscoreList.addScore(new Highscore("Player", board.getPoints()));
+		saved = true; // lyckades spara
+	    } catch (IOException ex) {
+		ex.printStackTrace();
+
+		// Visa popup med fråga om användaren vill försöka igen
+		int result = javax.swing.JOptionPane.showConfirmDialog(
+			null,
+			"Ett fel uppstod när highscore skulle sparas:\n" + ex.getMessage() +
+			"\nVill du försöka igen?",
+			"Fel vid sparning",
+			javax.swing.JOptionPane.YES_NO_OPTION,
+			javax.swing.JOptionPane.ERROR_MESSAGE
+		);
+
+		if (result != javax.swing.JOptionPane.YES_OPTION) {
+		    saved = true;
+		}
+	    }
+	}
+	highscoreSaved = true;
     }
 
     // -- ACTIONS -- //
@@ -186,11 +216,13 @@ public class TetrisViewer
 
     private class PauseAction extends AbstractAction
     {
-	private PauseAction() {
-
-	}
 	@Override public void actionPerformed(final ActionEvent actionEvent) {
-
+	    if (board.getGamePaused()){
+		board.setGamePaused(false);
+	    }
+	    else {
+		board.setGamePaused(true);
+	    }
 	}
     }
 }

@@ -15,6 +15,8 @@ public class Board
     private final static int DOUBLE_MARGIN = 2*MARGIN;
 
     private boolean gameOver = false;
+    private boolean gamePaused = false;
+    private int level = 0;
 
     private SquareType[][] squares;
     private int width;
@@ -113,6 +115,14 @@ public class Board
 	return gameOver;
     }
 
+    public boolean getGamePaused() {
+	return gamePaused;
+    }
+
+    public int getLevel() {
+	return level;
+    }
+
     // -- SETTERS -- //
 
 
@@ -128,11 +138,20 @@ public class Board
 	this.points = points;
     }
 
+    public void setLevel(int level) {
+	this.level = level;
+    }
+
     // -- BOARD OPERATIONS -- //
 
 
     public void setGameOver(boolean gameOver) {
 	this.gameOver = gameOver;
+	notifyListeners();
+    }
+
+    public void setGamePaused(boolean gamePaused) {
+	this.gamePaused = gamePaused;
 	notifyListeners();
     }
 
@@ -148,7 +167,7 @@ public class Board
 
     public void tick(){
 
-	if (gameOver){
+	if (gameOver || gamePaused){
 	    return;
 	}
 
@@ -238,7 +257,7 @@ public class Board
 		rowAmount++;
 	    }
 	}
-	setPoints(getPoints() + POINT_MAP.get(rowAmount));
+	setPoints(getPoints() + POINT_MAP.get(rowAmount) * getLevel());
     }
 
     //-- game interactions

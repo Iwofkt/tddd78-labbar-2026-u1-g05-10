@@ -64,8 +64,7 @@ public class TetrisComponent extends JComponent implements BoardListener
 	final Graphics2D g2d = (Graphics2D) g;
 
 	// Rita bakgrund
-	g2d.setColor(Color.BLACK);
-	g2d.fillRect(0, 0, getWidth(), getHeight());
+	overlay(g2d, 1, Color.BLACK);
 
 	drawBoard(g2d);
 
@@ -73,18 +72,30 @@ public class TetrisComponent extends JComponent implements BoardListener
 	drawFallingPoly(g2d);
 
 	// Rita poäng (uppe till höger)
-	drawCurrentScore(g2d);
+	drawStats(g2d, "Points: " + board.getPoints(), 1);
+
+	drawStats(g2d, "Level: " + board.getLevel(), 3);
 
 	if (board.getGameOver()){
-	    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, MENU_TRANSPARENCY));
-	    g2d.setColor(Color.BLACK);
-	    g2d.fillRect(0, 0, getWidth(), getHeight());
-	    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
-	    drawGameOver(g2d);
+	    overlay(g2d, 0.3F, new Color(70, 0, 0));
+	    drawTitle(g2d, "GAME OVER", Color.RED);
+	    drawGameStats(g2d);
+	}
+
+	else if (board.getGamePaused() && !board.getGameOver()){
+	    overlay(g2d, 0.3F, new Color(0, 0, 70));
+	    drawTitle(g2d, "GAME PAUSED", Color.BLUE);
+	    drawGameStats(g2d);
 	}
     }
 
     // -- PAINT HELPER FUNCTIONS -- //
+    private void overlay(Graphics2D g2d, float transperency, Color color) {
+	g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transperency));
+	g2d.setColor(color);
+	g2d.fillRect(0, 0, getWidth(), getHeight());
+	g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+    }
 
     private void drawBoard(Graphics2D g2d) {
 	// Loopa igenom alla positioner på brädet
@@ -159,8 +170,7 @@ public class TetrisComponent extends JComponent implements BoardListener
 	}
     }
 
-    private void drawCurrentScore(Graphics2D g2d) {
-	String scoreText = "Points: " + board.getPoints();
+    private void drawStats(Graphics2D g2d, String stat, int infoLevel) {
 
 	// Set font (adjust size if needed)
 	Font font = new Font("Arial", Font.BOLD, 20);
@@ -168,17 +178,19 @@ public class TetrisComponent extends JComponent implements BoardListener
 
 	// Get text width to align right
 	FontMetrics metrics = g2d.getFontMetrics(font);
-	int textWidth = metrics.stringWidth(scoreText);
+	int textWidth = metrics.stringWidth(stat);
 	int textHeight = metrics.getAscent();
 
 	int x = getWidth() - textWidth - TEXT_MARGIN;
-	int y = textHeight + TEXT_MARGIN;
+	int y = textHeight + TEXT_MARGIN*infoLevel;
 
 	g2d.setColor(Color.WHITE);
-	g2d.drawString(scoreText, x, y);
+	g2d.drawString(stat, x, y);
     }
 
-    private void drawGameOver(Graphics2D g2d) {
+    private void drawGameStats(Graphics2D g2d) {
+	// transparent overlay
+
 	String scoreText = "Points: " + board.getPoints();
 
 	Font scorefont = new Font("Arial", Font.BOLD, 40);
@@ -213,5 +225,20 @@ public class TetrisComponent extends JComponent implements BoardListener
 
 	    yOffset += scoreMetrics.getHeight(); // flytta ner för nästa rad
 	}
+    }
+
+    private void drawTitle(Graphics2D g2d, String title, Color color) {
+	Font scorefont = new Font("Arial", Font.BOLD, 45);
+	g2d.setFont(scorefont);
+
+	FontMetrics metrics = g2d.getFontMetrics(scorefont);
+	int textWidth = metrics.stringWidth(title);
+	int textHeight = metrics.getAscent();
+
+	int x = getWidth()/2 - textWidth/2;
+	int y = getHeight()/2 - TEXT_MARGIN*5;
+
+	g2d.setColor(color);
+	g2d.drawString(title, x, y);
     }
 }
