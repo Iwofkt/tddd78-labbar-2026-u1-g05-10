@@ -261,6 +261,7 @@ public class Board
     }
 
     //-- game interactions
+
     public void move(Direction dir) {
 	Point newPos = getFallingPos();
 	newPos.x += (dir == Direction.LEFT ? 1 : -1);
@@ -274,6 +275,44 @@ public class Board
 	}
 	notifyListeners();
     }
+
+    public void rotate(Direction dir) {
+	if (falling == null || gameOver) {
+	    return;
+	}
+	Poly currentFalling = falling;
+
+	// Skapa ett nytt roterat Poly
+	Poly rotated = falling.rotate(dir == Direction.RIGHT);
+	falling = rotated;
+
+	// Om rotationen leder till kollision, revert
+	if (hasCollision()) {
+	    falling = currentFalling;
+	}
+	notifyListeners();
+    }
+
+    public void drop() {
+	if (falling == null || gameOver) {
+	    return;
+	}
+
+	// until collision
+	while (true) {
+	    Point newPos = getFallingPos();
+	    newPos.y += 1;
+	    setFallingPos(newPos);
+
+	    if (hasCollision()) {
+		newPos.y -= 1;
+		setFallingPos(newPos);
+		break;
+	    }
+	}
+	notifyListeners();
+    }
+
 
     private boolean hasCollision() {
 	if (falling == null) {
@@ -302,24 +341,6 @@ public class Board
 	    }
 	}
 	return false;
-    }
-
-
-    public void rotate(Direction dir) {
-	if (falling == null || gameOver) {
-	    return;
-	}
-	Poly currentFalling = falling;
-
-	// Skapa ett nytt roterat Poly
-	Poly rotated = falling.rotate(dir == Direction.RIGHT);
-	falling = rotated;
-
-	// Om rotationen leder till kollision, revert
-	if (hasCollision()) {
-	    falling = currentFalling;
-	}
-	notifyListeners();
     }
 
 

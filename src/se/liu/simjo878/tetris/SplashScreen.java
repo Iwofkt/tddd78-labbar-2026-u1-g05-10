@@ -4,10 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
-public class splashscreen extends JComponent
+public class SplashScreen extends JComponent
 {
     private final ImageIcon icon = new ImageIcon(
 	    ClassLoader.getSystemResource("images/TETRISMenu.png"));
+
+    private JFrame splashFrame;
 
     @Override
     public final int getHeight(){
@@ -17,6 +19,28 @@ public class splashscreen extends JComponent
     @Override
     public final int getWidth(){
 	return icon.getIconWidth();
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+	return new Dimension(icon.getIconWidth(), icon.getIconHeight());
+    }
+
+    public void show() {
+	if (splashFrame == null) {
+	    splashFrame = new JFrame();
+	    splashFrame.add(this);
+	    splashFrame.pack();
+	    splashFrame.setLocationRelativeTo(null);
+	    splashFrame.setVisible(true);
+	}
+    }
+
+    public void stopShow() {
+	if (splashFrame != null) {
+	    splashFrame.dispose();
+	    splashFrame = null;
+	}
     }
 
     public void paintComponent(final Graphics g) {
@@ -34,21 +58,6 @@ public class splashscreen extends JComponent
 	icon.paintIcon(this, g, 0, 0);
 
 	g2d.setTransform(old);
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-	return new Dimension(icon.getIconWidth(), icon.getIconHeight());
-    }
-
-
-    public static void main(String[] args) {
-	final JFrame frame = new JFrame("Graphics2D Test");
-	frame.setLayout(new GridLayout(1,1));
-	splashscreen splashscreen = new splashscreen();
-	frame.add(splashscreen);
-	System.out.println(splashscreen.getWidth() + " " + splashscreen.getHeight());
-	frame.setVisible(true);
     }
 }
 

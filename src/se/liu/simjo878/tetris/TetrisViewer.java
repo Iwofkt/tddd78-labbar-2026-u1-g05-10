@@ -14,8 +14,8 @@ public class TetrisViewer
     private long startTime;
 
     private static int LEVEL_UP_TIME = 30;
-    private static final int START_DELAY = 200;
-    private static final int DELAY_DECREASE_PER_LEVEL = 25;
+    private static final int START_DELAY = 700;
+    private static final int DELAY_DECREASE_PER_LEVEL = 50;
     private static final int MIN_DELAY = 100;
 
     public TetrisViewer(Board board, HighscoreList highscoreList)
@@ -91,6 +91,7 @@ public class TetrisViewer
 	in.put(KeyStroke.getKeyStroke("D"), "left");
 	in.put(KeyStroke.getKeyStroke("W"), "rotateright");
 	in.put(KeyStroke.getKeyStroke("S"), "rotateleft");
+	in.put(KeyStroke.getKeyStroke("SPACE"), "dropdown");
 
 	in.put(KeyStroke.getKeyStroke("LEFT"), "right");
 	in.put(KeyStroke.getKeyStroke("RIGHT"), "left");
@@ -104,6 +105,7 @@ public class TetrisViewer
 	act.put("left", new MoveAction(Direction.LEFT));
 	act.put("rotateright", new RotateAction(Direction.RIGHT));
 	act.put("rotateleft", new RotateAction(Direction.LEFT));
+	act.put("dropdown", new DropAction());
 	act.put("quit", new QuitAction());
     }
 
@@ -188,6 +190,13 @@ public class TetrisViewer
 	}
     }
 
+    //Move action for the falling tetromino
+    private class DropAction extends AbstractAction {
+	@Override
+	public void actionPerformed(ActionEvent e) {
+	    board.drop();
+	}
+    }
 
     private class GameOverAction extends AbstractAction
     {
