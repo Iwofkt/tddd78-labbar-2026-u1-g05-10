@@ -3,9 +3,12 @@ package se.liu.simjo878.tetris;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 public class HighscoreList {
@@ -41,10 +44,31 @@ public class HighscoreList {
 
     public void saveToFile(String filename) throws IOException {
 	Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	try (FileWriter writer = new FileWriter(filename)) {
+
+	File originalFile = new File(filename);
+	File tempFile = new File(filename + ".tmp");
+
+	//  Fix map
+	File parentDir = originalFile.getParentFile();
+	if (parentDir != null && !parentDir.exists()) {
+	    if (!parentDir.mkdirs()) {
+		throw new IOException("Kunde inte skapa katalog: " + parentDir);
+	    }
+	}
+
+	//write to temp file
+	try (FileWriter writer = new FileWriter(tempFile)) {
 	    gson.toJson(this, writer);
 	}
+
+	// Move temp to originalfile
+	Files.move(tempFile.toPath(),
+		   originalFile.toPath(),
+		   StandardCopyOption.REPLACE_EXISTING,
+		   StandardCopyOption.ATOMIC_MOVE);
     }
+
+
 
     public static HighscoreList load() throws IOException {
 	return loadFromFile(getFullPath(DEFAULT_FILENAME));
@@ -58,7 +82,7 @@ public class HighscoreList {
     }
 
     private static String getFullPath(String filename) {
-	return System.getProperty("user.home") + "/" + filename;
+	return System.getProperty("user.home") + "/tetrisData/" + filename;
     }
 
 }

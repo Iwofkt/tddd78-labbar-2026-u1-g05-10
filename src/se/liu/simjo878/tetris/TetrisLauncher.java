@@ -33,15 +33,18 @@ public class TetrisLauncher
 			highscoreList = HighscoreList.load();
 			loaded = true; // lyckades läsa
 		    } catch (IOException ex) {
-			int result = JOptionPane.showConfirmDialog(
+			int result = JOptionPane.showOptionDialog(
 				null,
 				"Ignorera detta medelande ifall du vill skapa en ny highscore fil.\n" +
 				"\nEtt fel uppstod när highscore skulle läsas eller så exiterar inte filen:\n" +
 				ex.getMessage() +
 				"\nVill du försöka igen?",
 				"Fel vid highscore",
-				JOptionPane.YES_NO_OPTION,
-				JOptionPane.ERROR_MESSAGE
+				JOptionPane.YES_NO_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				new Object[] { "Ja", "Nej" },
+				"Nej"
 			);
 
 			if (result != JOptionPane.YES_OPTION) {

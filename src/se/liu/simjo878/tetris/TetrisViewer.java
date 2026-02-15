@@ -122,6 +122,7 @@ public class TetrisViewer
 		    MIN_DELAY,
 		    START_DELAY - (newLevel * DELAY_DECREASE_PER_LEVEL)
 	    );
+	    timer.setDelay(newDelay);
 	}
     }
 
@@ -137,13 +138,16 @@ public class TetrisViewer
 		ex.printStackTrace();
 
 		// Visa popup med fråga om användaren vill försöka igen
-		int result = javax.swing.JOptionPane.showConfirmDialog(
+		int result = javax.swing.JOptionPane.showOptionDialog(
 			null,
 			"Ett fel uppstod när highscore skulle sparas:\n" + ex.getMessage() +
 			"\nVill du försöka igen?",
 			"Fel vid sparning",
-			javax.swing.JOptionPane.YES_NO_OPTION,
-			javax.swing.JOptionPane.ERROR_MESSAGE
+			JOptionPane.YES_NO_CANCEL_OPTION,
+			JOptionPane.QUESTION_MESSAGE,
+			null,
+			new Object[] { "Ja", "Nej" },
+			"Nej"
 		);
 
 		if (result != javax.swing.JOptionPane.YES_OPTION) {
