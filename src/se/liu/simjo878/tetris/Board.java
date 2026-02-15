@@ -155,7 +155,6 @@ public class Board
 
     // -- BOARD OPERATIONS -- //
 
-
     public void setGameOver(boolean gameOver) {
 	this.gameOver = gameOver;
 	notifyListeners();
@@ -220,8 +219,8 @@ public class Board
 	this.fallingPos = new Point((width/2) - 1, 0);
 
 
-	switch (RND.nextInt(0, 2)) {
-	    case 1:
+	switch (RND.nextInt(0, 5)) {
+	    case 4:
 		fallHandler = fallthrough;
 		powerUp = PowerUps.FALLTHROUGH;
 		break;
