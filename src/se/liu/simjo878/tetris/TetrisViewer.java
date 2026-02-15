@@ -10,10 +10,13 @@ public class TetrisViewer
     private Board board;
     private final HighscoreList highscoreList;
     private boolean highscoreSaved = false;
-    private int startUpdateInterval = 250;
+
     private long startTime;
 
-    private static int LEVEL_UP_TIME = 50;
+    private static int LEVEL_UP_TIME = 30;
+    private static final int START_DELAY = 200;
+    private static final int DELAY_DECREASE_PER_LEVEL = 25;
+    private static final int MIN_DELAY = 100;
 
     public TetrisViewer(Board board, HighscoreList highscoreList)
     {
@@ -61,7 +64,7 @@ public class TetrisViewer
 
 	startTime = System.currentTimeMillis();
 
-	Timer timer = new Timer(startUpdateInterval, e -> {
+	Timer timer = new Timer(START_DELAY, e -> {
 
 	    if (!board.getGameOver()) {
 		updateSpeed((Timer)e.getSource());
@@ -115,8 +118,10 @@ public class TetrisViewer
 
 	    board.setLevel(newLevel);
 
-	    int newDelay = Math.max(100, startUpdateInterval - (newLevel * 50));
-	    timer.setDelay(newDelay);
+	    int newDelay = Math.max(
+		    MIN_DELAY,
+		    START_DELAY - (newLevel * DELAY_DECREASE_PER_LEVEL)
+	    );
 	}
     }
 

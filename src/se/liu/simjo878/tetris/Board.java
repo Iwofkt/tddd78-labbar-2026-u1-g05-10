@@ -257,7 +257,7 @@ public class Board
 		rowAmount++;
 	    }
 	}
-	setPoints(getPoints() + POINT_MAP.get(rowAmount) * getLevel());
+	setPoints(getPoints() + POINT_MAP.get(rowAmount) * (getLevel() + 1));
     }
 
     //-- game interactions
