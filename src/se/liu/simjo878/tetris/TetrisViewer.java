@@ -18,22 +18,6 @@ public class TetrisViewer
 	this.highscoreList = highscoreList;
     }
 
-    // Quiting the program with ctrl Q
-    private void attemptExit(JFrame frame) {
-	int choice = JOptionPane.showOptionDialog(
-		frame,
-		"Är du säker på att du vill avsluta applikationen?",
-		"Avsluta",
-		JOptionPane.YES_NO_OPTION,
-		JOptionPane.QUESTION_MESSAGE,
-		null,
-		new Object[] { "Ja", "Nej" },
-		"Nej");
-
-	if (choice == JOptionPane.YES_OPTION) {
-	    System.exit(0); // Avsluta programmet
-	}
-    }
 
     public void show() {
 
@@ -56,10 +40,13 @@ public class TetrisViewer
 	final JMenu file = new JMenu("Game");
 	final JMenuItem quitApp = new JMenuItem("Avsluta application", 'Q');
 	final JMenuItem quitRound = new JMenuItem("Avbryt omgång", 'O');
+	final JMenuItem pauseGame = new JMenuItem("Pausa spelet", 'P');
 	file.add(quitApp);
 	file.add(quitRound);
+	file.add(pauseGame);
 	quitRound.addActionListener(new GameOverAction(0));
-	quitApp.addActionListener(e -> attemptExit(frame));
+	quitApp.addActionListener(new QuitAction());
+	pauseGame.addActionListener(new pauseAction());
 	gameTopBar.add(file);
 
 	frame.setJMenuBar(gameTopBar);
@@ -72,7 +59,7 @@ public class TetrisViewer
 	Timer timer = new Timer(UPDATE_INTERVAL, e -> {
 	    board.tick();
 
-// save highscore once
+	    // save highscore once
 	    if (board.getGameOver() && !highscoreSaved) {
 		boolean saved = false;
 
@@ -129,7 +116,7 @@ public class TetrisViewer
 	act.put("left", new MoveAction(Direction.LEFT));
 	act.put("rotateright", new RotateAction(Direction.RIGHT));
 	act.put("rotateleft", new RotateAction(Direction.LEFT));
-	act.put("quit", new QuitAction(0));
+	act.put("quit", new QuitAction());
     }
 
     // -- ACTIONS -- //
@@ -176,17 +163,34 @@ public class TetrisViewer
 	}
     }
 
-    // Quiting the program with ctrl Q
     private class QuitAction extends AbstractAction
     {
-	private final int exitCode;
-
-	private QuitAction(int exitCode) {
-	    this.exitCode = exitCode;
-	}
 
 	@Override public void actionPerformed(final ActionEvent e) {
-	    System.exit(exitCode);
+	    int result = JOptionPane.showOptionDialog(
+		    null,
+		    "Är du säker på att du vill avsluta spelet:\n",
+		    "Avsluta",
+		    JOptionPane.YES_NO_CANCEL_OPTION,
+		    JOptionPane.QUESTION_MESSAGE,
+		    null,
+		    new Object[] { "Ja", "Nej" },
+		    "Nej"
+	    );
+
+	    if (result == JOptionPane.YES_OPTION) {
+		System.exit(0);
+	    }
+	}
+    }
+
+    private class PauseAction extends AbstractAction
+    {
+	private PauseAction() {
+
+	}
+	@Override public void actionPerformed(final ActionEvent actionEvent) {
+
 	}
     }
 }

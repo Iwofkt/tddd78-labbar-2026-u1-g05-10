@@ -14,6 +14,7 @@ public class TetrisComponent extends JComponent implements BoardListener
     private final static int SQUARE_BORDER = 4;
     private final static int MARGIN = 3;        // mellanrum mellan rutor
     private final static int TEXT_MARGIN = 10;
+    private final static float MENU_TRANSPARENCY = 0.4F;
     private HighscoreList myHighscoreList;
 
 
@@ -75,6 +76,10 @@ public class TetrisComponent extends JComponent implements BoardListener
 	drawCurrentScore(g2d);
 
 	if (board.getGameOver()){
+	    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, MENU_TRANSPARENCY));
+	    g2d.setColor(Color.BLACK);
+	    g2d.fillRect(0, 0, getWidth(), getHeight());
+	    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 	    drawGameOver(g2d);
 	}
     }
