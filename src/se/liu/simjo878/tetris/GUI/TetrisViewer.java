@@ -18,7 +18,7 @@ public class TetrisViewer
 
     private long startTime;
 
-    private static int LEVEL_UP_TIME = 30;
+    private static final int LEVEL_UP_TIME = 30;
     private static final int START_DELAY = 700;
     private static final int DELAY_DECREASE_PER_LEVEL = 50;
     private static final int MIN_DELAY = 100;

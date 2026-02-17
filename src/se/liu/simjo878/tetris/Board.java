@@ -3,6 +3,7 @@ package se.liu.simjo878.tetris;
 import se.liu.simjo878.tetris.FallHandlers.DefaultHandler;
 import se.liu.simjo878.tetris.FallHandlers.FallHandler;
 import se.liu.simjo878.tetris.FallHandlers.Fallthrough;
+import se.liu.simjo878.tetris.FallHandlers.Heavy;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class Board
     private Poly falling = null;
     private Point fallingPos = null;
     private FallHandler fallHandler;
+    private final Heavy heavy = new Heavy();
     private final FallHandler defaultHandler = new DefaultHandler();
     private final Fallthrough fallthrough = new Fallthrough();
     private PowerUps powerUp = PowerUps.NORMAL;
@@ -182,8 +184,10 @@ public class Board
 	}
 
 	if (getFalling() != null) {
+	    Point oldPos = new Point(fallingPos);
 	    moveFalling(1);
-	    if (fallHandler.hasCollision(this)){
+
+	    if (fallHandler.hasCollision(this, oldPos)){
 		moveFalling(-1);
 		addFallingToBoard();
 		removeFullRows();
@@ -193,7 +197,7 @@ public class Board
 
 	else {
 	    newFalling();
-	    if (fallHandler.hasCollision(this)){
+	    if (fallHandler.hasCollision(this, fallingPos)){
 		setGameOver(true);
 	    }
 	}
@@ -219,7 +223,11 @@ public class Board
 	this.fallingPos = new Point((width/2) - 1, 0);
 
 
-	switch (RND.nextInt(0, 5)) {
+	switch (RND.nextInt(0, 1)) {
+	    case 0:
+		fallHandler = heavy;
+		powerUp = PowerUps.HEAVY;
+		break;
 	    case 4:
 		fallHandler = fallthrough;
 		powerUp = PowerUps.FALLTHROUGH;
@@ -285,91 +293,61 @@ public class Board
     //-- game interactions
 
     public void move(Direction dir) {
-	Point newPos = getFallingPos();
 
-	if (newPos == null){
+	if (fallingPos == null) {
 	    return;
 	}
 
-	newPos.x += (dir == Direction.LEFT ? 1 : -1);
-	setFallingPos(newPos);
+	Point oldPos = new Point(fallingPos);
 
-	// does the move result in a collision?
-	if (fallHandler.hasCollision(this)){
-	    newPos = getFallingPos();
-	    newPos.x += (dir == Direction.LEFT ? -1 : 1);
-	    setFallingPos(newPos);
+	fallingPos.x += (dir == Direction.LEFT ? 1 : -1);
+
+	if (fallHandler.hasCollision(this, oldPos)) {
+	    fallingPos = oldPos;
 	}
+
 	notifyListeners();
     }
+
 
     public void rotate(Direction dir) {
+
 	if (falling == null || gameOver) {
 	    return;
 	}
-	Poly currentFalling = falling;
 
-	// Skapa ett nytt roterat Poly
-	Poly rotated = falling.rotate(dir == Direction.RIGHT);
-	falling = rotated;
+	Point oldPos = new Point(fallingPos);
 
-	// Om rotationen leder till kollision, revert
-	if (fallHandler.hasCollision(this)) {
-	    falling = currentFalling;
+	Poly oldPoly = falling;
+	falling = falling.rotate(dir == Direction.RIGHT);
+
+	if (fallHandler.hasCollision(this, oldPos)) {
+	    falling = oldPoly;
 	}
 	notifyListeners();
     }
 
+
     public void drop() {
+
 	if (falling == null || gameOver) {
 	    return;
 	}
 
-	// until collision
 	while (true) {
-	    Point newPos = getFallingPos();
-	    newPos.y += 1;
-	    setFallingPos(newPos);
 
-	    if (fallHandler.hasCollision(this)) {
-		newPos.y -= 1;
-		setFallingPos(newPos);
+	    Point oldPos = new Point(fallingPos);
+
+	    fallingPos.y += 1;
+
+	    if (fallHandler.hasCollision(this, oldPos)) {
+		fallingPos = oldPos;
 		break;
 	    }
 	}
+
 	notifyListeners();
     }
-
-/*
-    private boolean hasCollision() {
-	if (falling == null) {
-	    return false;
-	}
-
-	for (int x = 0; x < falling.getSize(); x++) {
-	    for (int y = 0; y < falling.getSize(); y++) {
-
-		SquareType blockSquare = falling.getSquareType(x, y);
-
-		// Om rutan i blocket inte är tom
-		if (blockSquare != SquareType.EMPTY) {
-
-		    int boardX = fallingPos.x + x;
-		    int boardY = fallingPos.y + y;
-
-		    SquareType boardSquare =
-			    squares[boardX + MARGIN][boardY + MARGIN];
-
-		    // Om rutan på spelplanen inte är tom → kollision
-		    if (boardSquare != SquareType.EMPTY) {
-			return true;
-		    }
-		}
-	    }
-	}
-	return false;
-    }
-*/
 
     // -- UPDATE LISTENERS -- //
 
@@ -381,5 +359,9 @@ public class Board
 	for (BoardListener bl : listeners){
 	    bl.boardChanged();
 	}
+    }
+
+    public void setSquareType(int x,int y,SquareType type) {
+	squares[x+MARGIN][y+MARGIN] = type;
     }
 }

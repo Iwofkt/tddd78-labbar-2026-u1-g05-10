@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class Fallthrough implements FallHandler
 {
-    @Override public boolean hasCollision(final Board board) {
+    @Override public boolean hasCollision(final Board board, final Point oldPos) {
 
 	Poly falling = board.getFalling();
 
@@ -26,7 +26,7 @@ public class Fallthrough implements FallHandler
 
 		// Kolla om koordinaten ligger inom spelplanen
 		if (boardX < 0 || boardX >= board.getWidth() || boardY < 0 || boardY >= board.getHeight()) {
-		    return true; // utanför spelplanen → kollision med OUTSIDE
+		    return true;
 		}
 	    }
 	}

@@ -77,13 +77,7 @@ public class TetrisComponent extends JComponent implements BoardListener
 
 	drawBoard(g2d);
 
-	if (board.getPowerUp() == PowerUps.FALLTHROUGH){
-	    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, GHOST_TRANSPARENCY));
-	}
-
 	drawFallingPoly(g2d);
-
-	g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 
 	// Rita poäng (uppe till höger)
 	drawStats(g2d, "Points: " + board.getPoints(), 1);
@@ -114,10 +108,10 @@ public class TetrisComponent extends JComponent implements BoardListener
     private void drawBoard(Graphics2D g2d) {
 	// Loopa igenom alla positioner på brädet
 
-	for (int row = 0; row < board.getHeight(); row++) {        // Rad för rad
-	    for (int col = 0; col < board.getWidth(); col++) {     // Kolumn för kolumn
+	for (int row = 0; row < board.getHeight(); row++) {
+	    for (int col = 0; col < board.getWidth(); col++) {
 		SquareType squareType = board.getSquareType(col, row);
-		drawSquare(g2d, col, row, squareType);
+		drawSquare(g2d, col, row, squareType, SQUARE_COLORS.get(squareType));
 	    }
 	}
     }
@@ -131,12 +125,10 @@ public class TetrisComponent extends JComponent implements BoardListener
     }
 
 
-    private void drawSquare(Graphics2D g2d, int col, int row, SquareType squareType) {
+    private void drawSquare(Graphics2D g2d, int col, int row, SquareType squareType, Color color) {
 	int pixelX = MARGIN + col * (SQUARE_SIZE + MARGIN);
 	int pixelY = MARGIN + row * (SQUARE_SIZE + MARGIN);
 
-	Color color = SQUARE_COLORS.get(squareType);
-	if (color == null) color = Color.BLACK;
 
 	// Rita fyllning
 	g2d.setColor(color);
@@ -174,9 +166,21 @@ public class TetrisComponent extends JComponent implements BoardListener
 		    int boardCol = startCol + polyCol;
 		    int boardRow = startRow + polyRow;
 
-		    // Kontrollera att positionen ä // <-- viktigtr inom brädet
+		    // Kontrollera att positionen
 		    if (boardCol >= 0 && boardCol < board.getWidth() && boardRow >= 0 && boardRow < board.getHeight()) {
-			drawSquare(g2d, boardCol, boardRow, squareType);
+
+			Color color = SQUARE_COLORS.get(squareType);
+
+			if (color == null)color = Color.BLACK;
+			else if (board.getPowerUp() == PowerUps.FALLTHROUGH) {
+			    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, GHOST_TRANSPARENCY));
+			}
+			else if(board.getPowerUp() == PowerUps.HEAVY) {
+			    color = Color.DARK_GRAY;
+			}
+			drawSquare(g2d, boardCol, boardRow, squareType, color);
+
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
 		    }
 		}
 	    }
