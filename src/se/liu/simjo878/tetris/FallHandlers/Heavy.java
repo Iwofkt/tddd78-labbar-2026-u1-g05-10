@@ -45,8 +45,9 @@ public class Heavy implements FallHandler {
 		if (boardSquare == SquareType.OUTSIDE) {
 		    return true; // kollision med OUTSIDE
 		}
-
-		overlapping.add(new Point(boardX, boardY)); // Överlappar ett fast block
+		if (boardSquare != SquareType.EMPTY) {
+		    overlapping.add(new Point(boardX, boardY)); // Överlappar ett fast block
+		}
 	    }
 	}
 
