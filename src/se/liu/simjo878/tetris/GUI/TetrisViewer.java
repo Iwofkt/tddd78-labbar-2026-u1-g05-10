@@ -4,6 +4,13 @@ import se.liu.simjo878.tetris.Board;
 import se.liu.simjo878.tetris.Direction;
 import se.liu.simjo878.tetris.Highscore.Highscore;
 import se.liu.simjo878.tetris.Highscore.HighscoreList;
+import se.liu.simjo878.tetris.interaction.DropAction;
+import se.liu.simjo878.tetris.interaction.GameOverAction;
+import se.liu.simjo878.tetris.interaction.InputHandler;
+import se.liu.simjo878.tetris.interaction.MoveAction;
+import se.liu.simjo878.tetris.interaction.PauseAction;
+import se.liu.simjo878.tetris.interaction.QuitAction;
+import se.liu.simjo878.tetris.interaction.RotateAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,9 +62,9 @@ public class TetrisViewer
 	file.add(quitApp);
 	file.add(quitRound);
 	file.add(pauseGame);
-	quitRound.addActionListener(new GameOverAction(0));
+	quitRound.addActionListener(new GameOverAction(0, board));
 	quitApp.addActionListener(new QuitAction());
-	pauseGame.addActionListener(new PauseAction());
+	pauseGame.addActionListener(new PauseAction(board));
 	gameTopBar.add(file);
 
 	frame.setJMenuBar(gameTopBar);
@@ -87,31 +94,7 @@ public class TetrisViewer
 	timer.start();
 
 	// --- ACTION SETUP --//
-
-
-	JComponent pane = frame.getRootPane();
-
-	final InputMap in = pane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-	in.put(KeyStroke.getKeyStroke("A"), "right");
-	in.put(KeyStroke.getKeyStroke("D"), "left");
-	in.put(KeyStroke.getKeyStroke("W"), "rotateright");
-	in.put(KeyStroke.getKeyStroke("S"), "rotateleft");
-	in.put(KeyStroke.getKeyStroke("SPACE"), "dropdown");
-
-	in.put(KeyStroke.getKeyStroke("LEFT"), "right");
-	in.put(KeyStroke.getKeyStroke("RIGHT"), "left");
-	in.put(KeyStroke.getKeyStroke("UP"), "rotateright");
-	in.put(KeyStroke.getKeyStroke("DOWN"), "rotateleft");
-
-	in.put(KeyStroke.getKeyStroke("ctrl Q"), "quit");
-
-	final ActionMap act = pane.getActionMap();
-	act.put("right", new MoveAction(Direction.RIGHT));
-	act.put("left", new MoveAction(Direction.LEFT));
-	act.put("rotateright", new RotateAction(Direction.RIGHT));
-	act.put("rotateleft", new RotateAction(Direction.LEFT));
-	act.put("dropdown", new DropAction());
-	act.put("quit", new QuitAction());
+	InputHandler inputHandler = new InputHandler(frame.getRootPane(), board);
     }
 
     // -- TIMER HELPER FUNCTIONS -- //
@@ -163,89 +146,5 @@ public class TetrisViewer
 	    }
 	}
 	highscoreSaved = true;
-    }
-
-    // -- ACTIONS -- //
-
-    //Move action for the falling tetromino
-    private class MoveAction extends AbstractAction {
-	private final Direction direction;
-
-	private MoveAction(Direction direction) {
-	    this.direction = direction;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-	    board.move(direction);
-	}
-    }
-
-    //Move action for the falling tetromino
-    private class RotateAction extends AbstractAction {
-	private final Direction direction;
-
-	private RotateAction(Direction direction) {
-	    this.direction = direction;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-	    board.rotate(direction);
-	}
-    }
-
-    //Move action for the falling tetromino
-    private class DropAction extends AbstractAction {
-	@Override
-	public void actionPerformed(ActionEvent e) {
-	    board.drop();
-	}
-    }
-
-    private class GameOverAction extends AbstractAction
-    {
-	private final int exitCode;
-
-	private GameOverAction(int exitCode) {
-	    this.exitCode = exitCode;
-	}
-
-	@Override public void actionPerformed(final ActionEvent e) {
-	    board.setGameOver(true);
-	}
-    }
-
-    private class QuitAction extends AbstractAction
-    {
-
-	@Override public void actionPerformed(final ActionEvent e) {
-	    int result = JOptionPane.showOptionDialog(
-		    null,
-		    "Är du säker på att du vill avsluta spelet:\n",
-		    "Avsluta",
-		    JOptionPane.YES_NO_CANCEL_OPTION,
-		    JOptionPane.QUESTION_MESSAGE,
-		    null,
-		    new Object[] { "Ja", "Nej" },
-		    "Nej"
-	    );
-
-	    if (result == JOptionPane.YES_OPTION) {
-		System.exit(0);
-	    }
-	}
-    }
-
-    private class PauseAction extends AbstractAction
-    {
-	@Override public void actionPerformed(final ActionEvent actionEvent) {
-	    if (board.getGamePaused()){
-		board.setGamePaused(false);
-	    }
-	    else {
-		board.setGamePaused(true);
-	    }
-	}
     }
 }
