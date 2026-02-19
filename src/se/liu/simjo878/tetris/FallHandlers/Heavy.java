@@ -18,12 +18,18 @@ public class Heavy implements FallHandler {
 	    return false; // Ingen kollisionshantering om inget block faller
 	}
 
-	Point fallingPos = board.getFallingPos();
-	boolean movedDown = fallingPos.y > oldPos.y;
+	boolean onlyMovedDown = false;
 
-	if (!movedDown) {
+	Point fallingPos = board.getFallingPos();
+	if (oldPos != null){
+	    onlyMovedDown = fallingPos.x == oldPos.x;
+	} else {
+	    onlyMovedDown = true;
+	}
+
+	if (!onlyMovedDown) {
 	    // Om den fallande brickan inte rör sig nedåt, använd den vanliga kollisionshanteraren
-	    return defaultHandler.hasCollision(board, oldPos);
+	    return defaultHandler.hasCollision(board, fallingPos);
 	}
 
 	List<Point> overlapping = new ArrayList<>();

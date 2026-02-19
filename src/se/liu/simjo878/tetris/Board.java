@@ -29,7 +29,9 @@ public class Board
 
     private Poly falling = null;
     private Point fallingPos = null;
+    private Point oldFallingPos = null;
     private FallHandler fallHandler;
+
     private final Heavy heavy = new Heavy();
     private final FallHandler defaultHandler = new DefaultHandler();
     private final Fallthrough fallthrough = new Fallthrough();
@@ -142,6 +144,13 @@ public class Board
     }
 
     // -- SETTERS -- //
+    private void setOldFallingPos(final Point fallingPos) {
+
+	if (oldFallingPos == null) {
+		oldFallingPos = new Point(fallingPos.x, fallingPos.y);
+	}
+	oldFallingPos.setLocation(fallingPos.x, fallingPos.y);
+    }
 
     private void setFallingPos(Point fallingPos) {
 	this.fallingPos = fallingPos;
@@ -178,16 +187,14 @@ public class Board
 
 
     public void tick(){
-
 	if (gameOver || gamePaused){
 	    return;
 	}
 
 	if (getFalling() != null) {
-	    Point oldPos = new Point(fallingPos);
 	    moveFalling(1);
 
-	    if (fallHandler.hasCollision(this, oldPos)){
+	    if (fallHandler.hasCollision(this, oldFallingPos)){
 		moveFalling(-1);
 		addFallingToBoard();
 		removeFullRows();
@@ -201,6 +208,7 @@ public class Board
 		setGameOver(true);
 	    }
 	}
+	setOldFallingPos(getFallingPos());
 	notifyListeners();
     }
 
@@ -223,7 +231,7 @@ public class Board
 	this.fallingPos = new Point((width/2) - 1, 0);
 
 
-	switch (RND.nextInt(0, 5)) {
+	switch (RND.nextInt(0, 2)) {
 	    case 0:
 		fallHandler = heavy;
 		powerUp = PowerUps.HEAVY;
@@ -294,34 +302,26 @@ public class Board
 
     public void move(Direction dir) {
 
-	if (fallingPos == null) {
-	    return;
+	if (fallingPos == null || gameOver || gamePaused) return;
+
+	int valueDir = (dir == Direction.LEFT ? 1 : -1);
+	fallingPos.x += valueDir;
+
+	if (fallHandler.hasCollision(this, oldFallingPos)) {
+	    fallingPos.x -= valueDir;
 	}
-
-	Point oldPos = new Point(fallingPos);
-
-	fallingPos.x += (dir == Direction.LEFT ? 1 : -1);
-
-	if (fallHandler.hasCollision(this, oldPos)) {
-	    fallingPos = oldPos;
-	}
-
 	notifyListeners();
     }
 
 
     public void rotate(Direction dir) {
 
-	if (falling == null || gameOver) {
-	    return;
-	}
-
-	Point oldPos = new Point(fallingPos);
+	if (fallingPos == null || gameOver || gamePaused) return;
 
 	Poly oldPoly = falling;
 	falling = falling.rotate(dir == Direction.RIGHT);
 
-	if (fallHandler.hasCollision(this, oldPos)) {
+	if (fallHandler.hasCollision(this, oldFallingPos)) {
 	    falling = oldPoly;
 	}
 	notifyListeners();
@@ -330,22 +330,17 @@ public class Board
 
     public void drop() {
 
-	if (falling == null || gameOver) {
-	    return;
-	}
+	if (fallingPos == null || gameOver || gamePaused) return;
 
 	while (true) {
 
-	    Point oldPos = new Point(fallingPos);
-
 	    fallingPos.y += 1;
 
-	    if (fallHandler.hasCollision(this, oldPos)) {
-		fallingPos = oldPos;
+	    if (fallHandler.hasCollision(this, oldFallingPos)) {
+		fallingPos.y -= 1;
 		break;
 	    }
 	}
-
 	notifyListeners();
     }
 
