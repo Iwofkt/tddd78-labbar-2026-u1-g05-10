@@ -88,13 +88,15 @@ public class TetrisViewer
 	    // save highscore once
 	    if (board.getGameOver()){
 
-		if (!highscoreSaved){
-		    saveHighscore();
-		}
-		if (board.getNewGame()){
+		saveHighscore();
+
+		if (board.getNewGame()) {
+		    timer.stop(); // Stop the current timer before resetting
 		    frame.dispose();
 		    board = new Board(board.getWidth(), board.getHeight());
 		    show();
+		    timer.setDelay(START_DELAY); // Set delay for new game
+		    timer.restart(); // Restart the timer with the new delay
 		}
 	    }
 	});
@@ -128,10 +130,20 @@ public class TetrisViewer
 
     private void saveHighscore() {
 	boolean saved = false;
-
+	String username = null;
+	while (username == null) {
+	    // Ask for the username input
+	    username = JOptionPane.showInputDialog(
+		    null,
+		    "Vänligen skriv in ditt användarnamn:\n",
+		    "Ange Användarnamn",
+		    JOptionPane.QUESTION_MESSAGE
+	    );
+	}
+	username = username.trim();
 	while (!saved) {
 	    try {
-		highscoreList.addScore(new Highscore("Player", board.getPoints()));
+		highscoreList.addScore(new Highscore(username, board.getPoints()));
 		saved = true; // lyckades spara
 	    } catch (IOException ex) {
 		ex.printStackTrace();

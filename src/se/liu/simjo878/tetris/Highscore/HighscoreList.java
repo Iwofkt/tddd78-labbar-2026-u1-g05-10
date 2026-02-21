@@ -25,7 +25,8 @@ public class HighscoreList {
 
     public void addScore(Highscore score) throws IOException {
 	highscores.add(score);
-	save(); // Spara automatiskt när listan ändras
+	highscores.sort(new ScoreComparator());
+	save();
     }
 
     // -- GETTERS -- //
