@@ -370,4 +370,30 @@ public class Board
     public void setSquareType(int x,int y,SquareType type) {
 	squares[x+MARGIN][y+MARGIN] = type;
     }
+
+    // -- RESET -- //
+
+    public void resetBoard() {
+	this.gameOver = false;
+	this.gamePaused = false;
+	this.newGame = false;
+	this.level = 0;
+	this.points = 0;
+
+	// Återställ "fallande" objekt
+	this.falling = null;
+	this.fallingPos = null;
+	this.oldFallingPos = null;
+	this.fallHandler = defaultHandler;
+
+	// Återställ alla squares till EMPTY
+	for (int col = 0; col < width; col++) {
+	    for (int row = 0; row < height; row++) {
+		squares[col + MARGIN][row + MARGIN] = SquareType.EMPTY;
+	    }
+	}
+
+	// Återställ eventuella power-ups eller andra speletillstånd
+	this.powerUp = PowerUps.NORMAL;
+    }
 }

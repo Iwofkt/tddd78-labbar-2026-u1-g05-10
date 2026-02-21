@@ -85,18 +85,16 @@ public class TetrisViewer
 
 	    board.tick();
 
-	    // save highscore once
-	    if (board.getGameOver()){
-
-		saveHighscore();
-
+	    if (board.getGameOver()) {
+		if (!highscoreSaved) {
+		    saveHighscore();
+		    highscoreSaved = true; // Sätt flaggan till true så att den inte sparar igen vid nästa game over.
+		}
 		if (board.getNewGame()) {
-		    timer.stop(); // Stop the current timer before resetting
-		    frame.dispose();
-		    board = new Board(board.getWidth(), board.getHeight());
-		    show();
-		    timer.setDelay(START_DELAY); // Set delay for new game
-		    timer.restart(); // Restart the timer with the new delay
+		    // Återställ spelet istället för att skapa en ny instans
+		    board.resetBoard();
+		    resetTimer((Timer)e.getSource());
+		    highscoreSaved = false;
 		}
 	    }
 	});
@@ -127,6 +125,12 @@ public class TetrisViewer
 	}
     }
 
+    private void resetTimer(Timer timer){
+	timer.stop();
+	startTime = System.currentTimeMillis();
+	timer.setDelay(START_DELAY);
+	timer.restart();
+    }
 
     private void saveHighscore() {
 	boolean saved = false;
@@ -166,6 +170,5 @@ public class TetrisViewer
 		}
 	    }
 	}
-	highscoreSaved = true;
     }
 }
