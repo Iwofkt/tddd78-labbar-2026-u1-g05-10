@@ -2,7 +2,7 @@ package se.liu.simjo878.tetris.Highscore;
 
 public class Highscore {
 
-    private String name;
+    private String name = null;
     private int points;
 
     public Highscore() {

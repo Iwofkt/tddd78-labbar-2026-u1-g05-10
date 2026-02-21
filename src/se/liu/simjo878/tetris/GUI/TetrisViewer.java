@@ -1,20 +1,16 @@
 package se.liu.simjo878.tetris.GUI;
 
 import se.liu.simjo878.tetris.Board;
-import se.liu.simjo878.tetris.Direction;
 import se.liu.simjo878.tetris.Highscore.Highscore;
 import se.liu.simjo878.tetris.Highscore.HighscoreList;
-import se.liu.simjo878.tetris.interaction.DropAction;
 import se.liu.simjo878.tetris.interaction.GameOverAction;
 import se.liu.simjo878.tetris.interaction.InputHandler;
-import se.liu.simjo878.tetris.interaction.MoveAction;
+import se.liu.simjo878.tetris.interaction.NewGameAction;
 import se.liu.simjo878.tetris.interaction.PauseAction;
 import se.liu.simjo878.tetris.interaction.QuitAction;
-import se.liu.simjo878.tetris.interaction.RotateAction;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 public class TetrisViewer
@@ -57,16 +53,21 @@ public class TetrisViewer
 
 	final JMenu file = new JMenu("Game");
 	final JMenuItem quitApp = new JMenuItem("Avsluta application", 'Q');
+	final JMenuItem newGame = new JMenuItem("Starta ny omgång", 'P');
 	final JMenuItem quitRound = new JMenuItem("Avbryt omgång", 'O');
 	final JMenuItem pauseGame = new JMenuItem("Pausa spelet", 'P');
+
 	file.add(quitApp);
+	file.add(newGame);
 	file.add(quitRound);
 	file.add(pauseGame);
-	quitRound.addActionListener(new GameOverAction(0, board));
-	quitApp.addActionListener(new QuitAction());
-	pauseGame.addActionListener(new PauseAction(board));
-	gameTopBar.add(file);
 
+	quitApp.addActionListener(new QuitAction());
+	newGame.addActionListener(new NewGameAction(board));
+	quitRound.addActionListener(new GameOverAction(0, board));
+	pauseGame.addActionListener(new PauseAction(board));
+
+	gameTopBar.add(file);
 	frame.setJMenuBar(gameTopBar);
 
 	frame.pack();
@@ -85,8 +86,16 @@ public class TetrisViewer
 	    board.tick();
 
 	    // save highscore once
-	    if (board.getGameOver() && !highscoreSaved) {
-		saveHighscore();
+	    if (board.getGameOver()){
+
+		if (!highscoreSaved){
+		    saveHighscore();
+		}
+		if (board.getNewGame()){
+		    frame.dispose();
+		    board = new Board(board.getWidth(), board.getHeight());
+		    show();
+		}
 	    }
 	});
 
@@ -128,7 +137,7 @@ public class TetrisViewer
 		ex.printStackTrace();
 
 		// Visa popup med fråga om användaren vill försöka igen
-		int result = javax.swing.JOptionPane.showOptionDialog(
+		int result = JOptionPane.showOptionDialog(
 			null,
 			"Ett fel uppstod när highscore skulle sparas:\n" + ex.getMessage() +
 			"\nVill du försöka igen?",
@@ -140,7 +149,7 @@ public class TetrisViewer
 			"Nej"
 		);
 
-		if (result != javax.swing.JOptionPane.YES_OPTION) {
+		if (result != JOptionPane.YES_OPTION) {
 		    saved = true;
 		}
 	    }

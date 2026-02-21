@@ -4,16 +4,18 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HighscoreList {
 
-    private ArrayList<Highscore> highscores;
+    private List<Highscore> highscores;
     private static final String DEFAULT_FILENAME = "highscores.json";
 
 
@@ -28,7 +30,7 @@ public class HighscoreList {
 
     // -- GETTERS -- //
 
-    public ArrayList<Highscore> getHighscores() {
+    public List<Highscore> getHighscores() {
 	return highscores;
     }
 
@@ -70,14 +72,16 @@ public class HighscoreList {
 
 
 
-    public static HighscoreList load() throws IOException {
+    public static HighscoreList load() throws FileNotFoundException {
 	return loadFromFile(getFullPath(DEFAULT_FILENAME));
     }
 
-    public static HighscoreList loadFromFile(String filename) throws IOException {
+    public static HighscoreList loadFromFile(String filename) throws FileNotFoundException {
 	Gson gson = new Gson();
 	try (FileReader reader = new FileReader(filename)) {
 	    return gson.fromJson(reader, HighscoreList.class);
+	} catch (IOException ignored) {
+	    throw new FileNotFoundException();
 	}
     }
 

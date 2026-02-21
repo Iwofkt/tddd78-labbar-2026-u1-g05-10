@@ -73,7 +73,7 @@ public class TetrisComponent extends JComponent implements BoardListener
 	final Graphics2D g2d = (Graphics2D) g;
 
 	// Rita bakgrund
-	overlay(g2d, 1, Color.BLACK);
+	drawOverlay(g2d, 1, Color.BLACK);
 
 	drawBoard(g2d);
 
@@ -85,20 +85,20 @@ public class TetrisComponent extends JComponent implements BoardListener
 	drawStats(g2d, "Level: " + board.getLevel(), 3);
 
 	if (board.getGameOver()){
-	    overlay(g2d, MENU_TRANSPARENCY, new Color(70, 0, 0));
+	    drawOverlay(g2d, MENU_TRANSPARENCY, new Color(70, 0, 0));
 	    drawTitle(g2d, "GAME OVER", Color.RED);
 	    drawGameStats(g2d);
 	}
 
 	else if (board.getGamePaused() && !board.getGameOver()){
-	    overlay(g2d, 0.3F, new Color(0, 0, 70));
+	    drawOverlay(g2d, 0.3F, new Color(0, 0, 70));
 	    drawTitle(g2d, "GAME PAUSED", Color.BLUE);
 	    drawGameStats(g2d);
 	}
     }
 
     // -- PAINT HELPER FUNCTIONS -- //
-    private void overlay(Graphics2D g2d, float transperency, Color color) {
+    private void drawOverlay(Graphics2D g2d, float transperency, Color color) {
 	g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transperency));
 	g2d.setColor(color);
 	g2d.fillRect(0, 0, getWidth(), getHeight());
@@ -132,7 +132,7 @@ public class TetrisComponent extends JComponent implements BoardListener
 
 	// Rita fyllning
 	g2d.setColor(color);
-	g2d.fillRect(pixelX + 2, pixelY + 2, SQUARE_SIZE - SQUARE_BORDER, SQUARE_SIZE - SQUARE_BORDER);
+	g2d.fillRect(pixelX + SQUARE_BORDER/2, pixelY + SQUARE_BORDER/2, SQUARE_SIZE - SQUARE_BORDER, SQUARE_SIZE - SQUARE_BORDER);
 
 	// Ljuskant if det är ett block
 	if (squareType != SquareType.EMPTY) {
@@ -210,10 +210,10 @@ public class TetrisComponent extends JComponent implements BoardListener
 
 	String scoreText = "Points: " + board.getPoints();
 
-	Font scorefont = new Font("Arial", Font.BOLD, 40);
-	g2d.setFont(scorefont);
+	Font scoreFont = new Font("Arial", Font.BOLD, 40);
+	g2d.setFont(scoreFont);
 
-	FontMetrics metrics = g2d.getFontMetrics(scorefont);
+	FontMetrics metrics = g2d.getFontMetrics(scoreFont);
 	int textWidth = metrics.stringWidth(scoreText);
 	int textHeight = metrics.getAscent();
 

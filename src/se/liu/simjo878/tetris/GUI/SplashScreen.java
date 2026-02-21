@@ -9,7 +9,7 @@ public class SplashScreen extends JComponent
     private final ImageIcon icon = new ImageIcon(
 	    ClassLoader.getSystemResource("images/TETRISMenu.png"));
 
-    private JFrame splashFrame;
+    private JFrame splashFrame = null;
 
     @Override
     public final int getHeight(){
@@ -57,7 +57,7 @@ public class SplashScreen extends JComponent
 	// Steg 1:  Starta på (0,0)
 	icon.paintIcon(this, g, 0, 0);
 
-	g2d.setTransform(old);
+	g2d.transform(old);
     }
 }
 
