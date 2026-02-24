@@ -1,4 +1,4 @@
-package se.liu.simjo878.tetris.GUI;
+package se.liu.simjo878.tetris.gui;
 
 import javax.swing.*;
 import java.awt.*;

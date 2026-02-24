@@ -1,9 +1,9 @@
 package se.liu.simjo878.tetris;
 
-import se.liu.simjo878.tetris.FallHandlers.DefaultHandler;
-import se.liu.simjo878.tetris.FallHandlers.FallHandler;
-import se.liu.simjo878.tetris.FallHandlers.Fallthrough;
-import se.liu.simjo878.tetris.FallHandlers.Heavy;
+import se.liu.simjo878.tetris.fallHandlers.DefaultHandler;
+import se.liu.simjo878.tetris.fallHandlers.FallHandler;
+import se.liu.simjo878.tetris.fallHandlers.Fallthrough;
+import se.liu.simjo878.tetris.fallHandlers.Heavy;
 
 import java.awt.*;
 import java.util.ArrayList;

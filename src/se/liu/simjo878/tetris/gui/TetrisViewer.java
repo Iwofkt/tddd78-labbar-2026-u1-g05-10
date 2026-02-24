@@ -1,8 +1,8 @@
-package se.liu.simjo878.tetris.GUI;
+package se.liu.simjo878.tetris.gui;
 
 import se.liu.simjo878.tetris.Board;
-import se.liu.simjo878.tetris.Highscore.Highscore;
-import se.liu.simjo878.tetris.Highscore.HighscoreList;
+import se.liu.simjo878.tetris.highscore.Highscore;
+import se.liu.simjo878.tetris.highscore.HighscoreList;
 import se.liu.simjo878.tetris.interaction.GameOverAction;
 import se.liu.simjo878.tetris.interaction.InputHandler;
 import se.liu.simjo878.tetris.interaction.NewGameAction;

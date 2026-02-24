@@ -1,8 +1,8 @@
 package se.liu.simjo878.tetris;
 
-import se.liu.simjo878.tetris.GUI.SplashScreen;
-import se.liu.simjo878.tetris.GUI.TetrisViewer;
-import se.liu.simjo878.tetris.Highscore.HighscoreList;
+import se.liu.simjo878.tetris.gui.SplashScreen;
+import se.liu.simjo878.tetris.gui.TetrisViewer;
+import se.liu.simjo878.tetris.highscore.HighscoreList;
 
 import javax.swing.*;
 import java.io.IOException;
