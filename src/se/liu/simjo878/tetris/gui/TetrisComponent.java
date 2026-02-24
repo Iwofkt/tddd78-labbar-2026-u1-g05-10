@@ -98,8 +98,8 @@ public class TetrisComponent extends JComponent implements BoardListener
     }
 
     // -- PAINT HELPER FUNCTIONS -- //
-    private void drawOverlay(Graphics2D g2d, float transperency, Color color) {
-	g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transperency));
+    private void drawOverlay(Graphics2D g2d, float transparency, Color color) {
+	g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
 	g2d.setColor(color);
 	g2d.fillRect(0, 0, getWidth(), getHeight());
 	g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
