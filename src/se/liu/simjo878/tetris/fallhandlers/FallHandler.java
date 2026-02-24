@@ -1,4 +1,4 @@
-package se.liu.simjo878.tetris.fallHandlers;
+package se.liu.simjo878.tetris.fallhandlers;
 
 import se.liu.simjo878.tetris.Board;
 

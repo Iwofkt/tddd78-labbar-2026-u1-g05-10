@@ -245,10 +245,10 @@ public class TetrisComponent extends JComponent implements BoardListener
     }
 
     private void drawTitle(Graphics2D g2d, String title, Color color) {
-	Font scorefont = new Font("Arial", Font.BOLD, 45);
-	g2d.setFont(scorefont);
+	Font scoreFont = new Font("Arial", Font.BOLD, 45);
+	g2d.setFont(scoreFont);
 
-	FontMetrics metrics = g2d.getFontMetrics(scorefont);
+	FontMetrics metrics = g2d.getFontMetrics(scoreFont);
 	int textWidth = metrics.stringWidth(title);
 	int textHeight = metrics.getAscent();
 
