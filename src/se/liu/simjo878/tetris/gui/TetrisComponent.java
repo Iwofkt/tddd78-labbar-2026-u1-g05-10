@@ -24,6 +24,7 @@ public class TetrisComponent extends JComponent implements BoardListener
     private final static int TEXT_MARGIN = 10;
     private final static float MENU_TRANSPARENCY = 0.4F;
     private final static float GHOST_TRANSPARENCY = 0.2F;
+    private static final double LIGHTEN_FACTOR = 0.5;
     private HighscoreList myHighscoreList;
 
 
@@ -136,9 +137,9 @@ public class TetrisComponent extends JComponent implements BoardListener
 
 	// Ljuskant if det är ett block
 	if (squareType != SquareType.EMPTY) {
-	    Color borderColor = lighten(color, 0.5);
+	    Color borderColor = lighten(color, LIGHTEN_FACTOR);
 	    g2d.setColor(borderColor);
-	    g2d.setStroke(new BasicStroke(4));
+	    g2d.setStroke(new BasicStroke(SQUARE_BORDER));
 	    g2d.drawRect(pixelX + 1, pixelY + 1, SQUARE_SIZE - SQUARE_BORDER, SQUARE_SIZE - SQUARE_BORDER);
 	}
 	else{
