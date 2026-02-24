@@ -18,7 +18,7 @@ public class Board
     private final static int NONE_SQUARES_MARGIN = 2;
     private final static int MARGIN = 10;
     private final static int DOUBLE_MARGIN = 2*MARGIN;
-    private final static int POWEUP_ODDS = 7;
+    private final static int POWERUP_ODDS = 7;
 
     private boolean gameOver = false;
     private boolean gamePaused = false;
@@ -214,7 +214,7 @@ public class Board
 	}
 
 	else {
-	    newFalling();
+	    createFalling();
 	    if (fallHandler.hasCollision(this, fallingPos)){
 		setGameOver(true);
 	    }
@@ -235,14 +235,14 @@ public class Board
     }
 
 
-    private void newFalling(){
+    private void createFalling(){
 	this.falling = tetrominoMaker.getPoly(
 		RND.nextInt(SquareType.values().length-NONE_SQUARES_MARGIN)
 	);
 	this.fallingPos = new Point((width/2) - 1, 0);
 
 
-	switch (RND.nextInt(0, POWEUP_ODDS)) {
+	switch (RND.nextInt(0, POWERUP_ODDS)) {
 	    case 0:
 		fallHandler = heavy;
 		powerUp = PowerUps.HEAVY;
