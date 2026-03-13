@@ -7,17 +7,20 @@ import java.awt.*;
  * Handles hover state and invokes a callback when clicked.
  */
 public class Button {
-    private final Rectangle bounds;      // virtual coordinates
+
+    private static final int DEFAULT_CORNER_RADIUS = 10;
+    private static final int TEXT_VERTICAL_OFFSET = 2;
+
+    private final Rectangle bounds;
     private final String text;
     private final Runnable onClick;
     private boolean hovered = false;
 
-    // Optional styling (you can add more as needed)
     private Color normalColor = Color.GREEN;
     private Color hoverColor = new Color(100, 200, 100);
     private Color textColor = Color.BLACK;
     private Font font = new Font("Arial", Font.BOLD, 24);
-    private int cornerRadius = 10;
+    private int cornerRadius = DEFAULT_CORNER_RADIUS;
 
     public Button(int x, int y, int width, int height, String text, Runnable onClick) {
         this.bounds = new Rectangle(x, y, width, height);
@@ -25,7 +28,7 @@ public class Button {
         this.onClick = onClick;
     }
 
-    // Optional setters for styling
+    // -- SETTER -- //
     public void setNormalColor(Color color) { this.normalColor = color; }
     public void setHoverColor(Color color) { this.hoverColor = color; }
     public void setTextColor(Color color) { this.textColor = color; }
@@ -75,7 +78,7 @@ public class Button {
         g2d.setFont(font);
         FontMetrics fm = g2d.getFontMetrics();
         int textX = bounds.x + (bounds.width - fm.stringWidth(text)) / 2;
-        int textY = bounds.y + (bounds.height + fm.getAscent()) / 2 - 2; // vertical center
+        int textY = bounds.y + (bounds.height + fm.getAscent()) / 2 - TEXT_VERTICAL_OFFSET;
         g2d.drawString(text, textX, textY);
 
         // Restore (optional)

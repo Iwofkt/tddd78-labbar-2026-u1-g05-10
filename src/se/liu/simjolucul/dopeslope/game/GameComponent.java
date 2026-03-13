@@ -1,4 +1,4 @@
-package se.liu.simjolucul.dopeslope.Game;
+package se.liu.simjolucul.dopeslope.game;
 
 import se.liu.simjolucul.dopeslope.Main;
 import se.liu.simjolucul.dopeslope.effects.Particle;
@@ -169,7 +169,7 @@ public class GameComponent extends JComponent implements WorldObserver {
         drawStatBar(g2d, player.getYSpeed(), player.getMaxSpeed(), 4);
 
         drawTextStat(g2d, "DISTANCE:", 6);
-        drawTextStat(g2d, (int) (player.getDistanceTraveled() / 100) + "m", 8);
+        drawTextStat(g2d, (int) (player.getDistanceTraveled() / 100) + " m", 8);
 
         drawTextStat(g2d, "TIME:", 11);
         drawTextStat(g2d, gameBase.getFormattedGameTime(), 13);

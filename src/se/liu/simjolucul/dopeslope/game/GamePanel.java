@@ -1,4 +1,4 @@
-package se.liu.simjolucul.dopeslope.Game;
+package se.liu.simjolucul.dopeslope.game;
 
 import se.liu.simjolucul.dopeslope.Main;
 import se.liu.simjolucul.dopeslope.handlers.interaction.InputHandler;

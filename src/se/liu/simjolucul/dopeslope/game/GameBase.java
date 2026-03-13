@@ -1,8 +1,8 @@
-package se.liu.simjolucul.dopeslope.Game;
+package se.liu.simjolucul.dopeslope.game;
 
-import se.liu.simjolucul.dopeslope.Slopes.CombeDeCaron;
-import se.liu.simjolucul.dopeslope.Slopes.Endless;
-import se.liu.simjolucul.dopeslope.Slopes.GameMode;
+import se.liu.simjolucul.dopeslope.slopes.CombeDeCaron;
+import se.liu.simjolucul.dopeslope.slopes.Endless;
+import se.liu.simjolucul.dopeslope.slopes.GameMode;
 import se.liu.simjolucul.dopeslope.effects.snow.SnowFall;
 import se.liu.simjolucul.dopeslope.effects.snow.SnowParticle;
 import se.liu.simjolucul.dopeslope.effects.snow.SnowSpray;
@@ -22,20 +22,21 @@ import java.util.List;
 
 public class GameBase {
 
-    private final int MARGIN = 30;
+    private final static double PLAYER_START_ROTATION = 0.5 * Math.PI;
+    private static final int MARGIN = 30;
     private final int width;
     private final int height;
 
-    GameMode gameMode;
     GameModeType gameModeType = GameModeType.Endless;
     String resourcePack = "standardPixel";
 
     private final Player player;
-    private final BufferedImage player_img;
+    private final BufferedImage playerImg;
 
     private final GameTimer gameTimer = new GameTimer();
     private final ObjectCollision objectCollision = new ObjectCollision();
-    private InputHandler inputHandler;
+    private InputHandler inputHandler = null;
+    GameMode gameMode = null;
 
     private final SnowFall snowFall;
     private final Tracks playerTracks;
@@ -60,10 +61,9 @@ public class GameBase {
         this.width = width;
 
         Point spawnPoint = new Point(width / 2, height / 3);
-        double PLAYER_START_ROTATION = 0.5 * Math.PI;
 
-        this.player_img = ImageLoader.loadTextureSize(getResourcePack(), "player", 2, 2);
-        this.player = new Player(spawnPoint, PLAYER_START_ROTATION, player_img);
+        this.playerImg = ImageLoader.loadTextureSize(getResourcePack(), "player", 2, 2);
+        this.player = new Player(spawnPoint, PLAYER_START_ROTATION, playerImg);
 
         this.observers = new ArrayList<>();
 
@@ -202,7 +202,6 @@ public class GameBase {
 
             if (inputHandler.isQuitPressed()) {
                 System.exit(0);
-                inputHandler.resetQuit();
             }
         }
 

@@ -1,6 +1,6 @@
 package se.liu.simjolucul.dopeslope.handlers.interaction;
 
-import se.liu.simjolucul.dopeslope.Game.GameBase;
+import se.liu.simjolucul.dopeslope.game.GameBase;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

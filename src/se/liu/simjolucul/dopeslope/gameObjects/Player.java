@@ -1,6 +1,6 @@
 package se.liu.simjolucul.dopeslope.gameObjects;
 
-import se.liu.simjolucul.dopeslope.Game.Direction;
+import se.liu.simjolucul.dopeslope.game.Direction;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

@@ -1,4 +1,4 @@
-package se.liu.simjolucul.dopeslope.Game;
+package se.liu.simjolucul.dopeslope.game;
 
 public enum GameModeType {
     Endless, CombeDeCaron

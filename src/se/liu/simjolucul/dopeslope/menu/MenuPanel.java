@@ -1,6 +1,6 @@
 package se.liu.simjolucul.dopeslope.menu;
 
-import se.liu.simjolucul.dopeslope.Game.GameModeType;
+import se.liu.simjolucul.dopeslope.game.GameModeType;
 import se.liu.simjolucul.dopeslope.Main;
 import javax.swing.*;
 import java.awt.*;

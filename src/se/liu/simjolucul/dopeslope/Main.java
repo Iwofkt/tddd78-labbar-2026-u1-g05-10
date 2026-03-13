@@ -1,7 +1,7 @@
 package se.liu.simjolucul.dopeslope;
 
-import se.liu.simjolucul.dopeslope.Game.GameModeType;
-import se.liu.simjolucul.dopeslope.Game.GamePanel;
+import se.liu.simjolucul.dopeslope.game.GameModeType;
+import se.liu.simjolucul.dopeslope.game.GamePanel;
 import se.liu.simjolucul.dopeslope.highscore.HighscoreList;
 import se.liu.simjolucul.dopeslope.menu.MenuPanel;
 
