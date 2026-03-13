@@ -1,6 +1,6 @@
 package se.liu.simjolucul.dopeslope.slopes;
 
-import se.liu.simjolucul.dopeslope.game.GameBase;
+import se.liu.simjolucul.dopeslope.game.GBase;
 import se.liu.simjolucul.dopeslope.gameObjects.*;
 import se.liu.simjolucul.dopeslope.handlers.GateSpawn;
 import se.liu.simjolucul.dopeslope.handlers.collision.GateCollisionAlpine;
@@ -36,7 +36,7 @@ public class CombeDeCaron extends BaseGameMode {
     private int nextGateIndex = 0;
     private boolean finishLineSpawned = false;
 
-    public CombeDeCaron(GameBase gameBase) {
+    public CombeDeCaron(GBase gameBase) {
         super(gameBase);
         // No extra images needed
     }

@@ -7,32 +7,32 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MenuModel {
-    private final int SNOW_SPEED = 10;
+public class Model
+{
+    private static final int SNOW_SPEED = 10;
     private final int width;
     private final int height;
     private int selectedIndex = 0;
     private int hoveredIndex = -1;
-    private String title;
-    private List<MenuItem> items;
+    private String title = null;
+    private List<MenuItem> items = null;
     private final List<Runnable> changeListeners = new ArrayList<>();
     private final SnowFall snowFall;
 
-    public MenuModel(int width, int height) {
+    public Model(int width, int height) {
         this.width = width;
         this.height = height;
-        setScreen(MenuScreen.MAIN);
+        setScreen(MScreens.MAIN);
         snowFall = new SnowFall(1, 2, width);
         snowFall.initializeSnowfall(width, height);
     }
 
-    public void setScreen(MenuScreen screen) {
-        switch (screen) {
+    public void setScreen(MScreens screens) {
+        switch (screens) {
             case MAIN:
                 title = "Dope Slope";
                 items = Arrays.asList(
                         new MenuItem("Play", "PLAY"),
-                        new MenuItem("Options", "OPTIONS"),
                         new MenuItem("Exit", "EXIT")
                 );
                 break;
@@ -44,15 +44,6 @@ public class MenuModel {
                         new MenuItem("Back", "BACK")
                 );
                 break;
-            case OPTIONS:
-                title = "Options";
-                items = Arrays.asList(
-                        new MenuItem("Sound", "OPTION_SOUND"),
-                        new MenuItem("Graphics", "OPTION_GRAPHICS"),
-                        new MenuItem("Back", "BACK")
-                );
-                break;
-            // add more cases as needed
         }
         notifyChange();
     }

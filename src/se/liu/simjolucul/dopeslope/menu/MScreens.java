@@ -1,7 +1,8 @@
 // MenuScreen.java
 package se.liu.simjolucul.dopeslope.menu;
 
-public enum MenuScreen {
+public enum MScreens
+{
     MAIN,
     MODE_SELECT,
     OPTIONS

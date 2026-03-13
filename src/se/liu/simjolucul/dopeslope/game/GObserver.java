@@ -1,5 +1,6 @@
 package se.liu.simjolucul.dopeslope.game;
 
-public interface WorldObserver {
+public interface GObserver
+{
     public void worldUpdated();
 }

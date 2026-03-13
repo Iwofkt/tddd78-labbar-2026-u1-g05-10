@@ -1,9 +1,9 @@
 package se.liu.simjolucul.dopeslope;
 
-import se.liu.simjolucul.dopeslope.game.GameModeType;
-import se.liu.simjolucul.dopeslope.game.GamePanel;
+import se.liu.simjolucul.dopeslope.game.GModeType;
+import se.liu.simjolucul.dopeslope.game.GPanel;
 import se.liu.simjolucul.dopeslope.highscore.HighscoreList;
-import se.liu.simjolucul.dopeslope.menu.MenuPanel;
+import se.liu.simjolucul.dopeslope.menu.MPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,10 +14,10 @@ public class Main{
     private final JFrame frame;
     private final CardLayout cardLayout;
     private final JPanel cardPanel;
-    private final GamePanel gamePanel;
-    private final MenuPanel menuPanel;
+    private final GPanel gPanel;
+    private final MPanel menuPanel;
 
-    private final Map<GameModeType, HighscoreList> highscoreLists = new EnumMap<>(GameModeType.class);
+    private final Map<GModeType, HighscoreList> highscoreLists = new EnumMap<>(GModeType.class);
 
     public static final int VIRTUAL_WIDTH = 800;
     public static final int VIRTUAL_HEIGHT = 1000;
@@ -34,12 +34,12 @@ public class Main{
         cardPanel = new JPanel(cardLayout);
 
         // Create panels
-        gamePanel = new GamePanel(this, VIRTUAL_WIDTH, VIRTUAL_HEIGHT, highscoreLists);
-        menuPanel = new MenuPanel(this, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+        gPanel = new GPanel(this, VIRTUAL_WIDTH, VIRTUAL_HEIGHT, highscoreLists);
+        menuPanel = new MPanel(this, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
 
         // Add panels as cards
         cardPanel.add(menuPanel, "menu");
-        cardPanel.add(gamePanel, "game");
+        cardPanel.add(gPanel, "game");
 
         // Set the card panel as the content pane
         frame.setContentPane(cardPanel);
@@ -54,25 +54,25 @@ public class Main{
     public void showMenu() {
         menuPanel.startMenu();
         cardLayout.show(cardPanel, "menu");
-        gamePanel.stopGame();
+        gPanel.stopGame();
     }
 
-    public void startGame(GameModeType gameModeType) {
+    public void startGame(GModeType gameModeType) {
         menuPanel.stopMenu();
         cardLayout.show(cardPanel, "game");
-        gamePanel.startGame(gameModeType);
+        gPanel.startGame(gameModeType);
     }
 
-    public Map<GameModeType, HighscoreList> getHighscoreLists() {
+    public Map<GModeType, HighscoreList> getHighscoreLists() {
         return highscoreLists;
     }
 
     private void loadHighscores() {
-        highscoreLists.put(GameModeType.Endless,
-                loadSingleHighscoreList("highscores_endless.json", false));
+        highscoreLists.put(GModeType.Endless,
+                           loadSingleHighscoreList("highscores_endless.json", false));
 
-        highscoreLists.put(GameModeType.CombeDeCaron,
-                loadSingleHighscoreList("highscores_combedecaron.json", true));
+        highscoreLists.put(GModeType.CombeDeCaron,
+                           loadSingleHighscoreList("highscores_combedecaron.json", true));
     }
 
     private static HighscoreList loadSingleHighscoreList(String filename, boolean lowerIsBetter) {

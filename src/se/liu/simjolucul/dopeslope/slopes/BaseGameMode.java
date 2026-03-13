@@ -1,6 +1,6 @@
 package se.liu.simjolucul.dopeslope.slopes;
 
-import se.liu.simjolucul.dopeslope.game.GameBase;
+import se.liu.simjolucul.dopeslope.game.GBase;
 import se.liu.simjolucul.dopeslope.gameObjects.*;
 import se.liu.simjolucul.dopeslope.handlers.ImageLoader;
 
@@ -16,7 +16,7 @@ public abstract class BaseGameMode implements GameMode {
 
     protected final Random rnd = new Random();
 
-    protected final GameBase gameBase;
+    protected final GBase gameBase;
     protected final Player player;
     protected final List<Obstacle> obstacles;
     protected final List<Gate> gates;
@@ -29,7 +29,7 @@ public abstract class BaseGameMode implements GameMode {
     protected final BufferedImage gateLImg;
     protected final BufferedImage gateRImg;
 
-    protected BaseGameMode(GameBase gameBase) {
+    protected BaseGameMode(GBase gameBase) {
 	this.gameBase = gameBase;
 	this.player = gameBase.getPlayer();
 	this.obstacles = gameBase.getObstacles();

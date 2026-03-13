@@ -1,5 +1,6 @@
 package se.liu.simjolucul.dopeslope.game;
 
-public enum GameModeType {
+public enum GModeType
+{
     Endless, CombeDeCaron
 }

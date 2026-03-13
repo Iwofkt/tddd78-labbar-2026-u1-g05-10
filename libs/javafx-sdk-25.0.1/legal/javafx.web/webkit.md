@@ -2062,7 +2062,7 @@ Source/WebCore/Modules/pictureinpicture
 Source/WebCore/Modules/push-api
 Source/WebCore/Modules/remoteplayback
 Source/WebCore/Modules/reporting
-Source/WebCore/Modules/screen-wake-lock
+Source/WebCore/Modules/screens-wake-lock
 Source/WebCore/Modules/speech
 Source/WebCore/Modules/storage
 Source/WebCore/Modules/streams

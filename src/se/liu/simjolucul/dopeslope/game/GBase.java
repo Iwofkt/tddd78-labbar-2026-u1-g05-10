@@ -20,18 +20,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class GameBase {
-
+public class GBase
+{
+    private final static int PLAYER_TEXTURE_SCALE = 2;
     private final static double PLAYER_START_ROTATION = 0.5 * Math.PI;
     private static final int MARGIN = 30;
     private final int width;
     private final int height;
 
-    GameModeType gameModeType = GameModeType.Endless;
+    GModeType gameModeType = GModeType.Endless;
     String resourcePack = "standardPixel";
 
     private final Player player;
-    private final BufferedImage playerImg;
 
     private final GameTimer gameTimer = new GameTimer();
     private final ObjectCollision objectCollision = new ObjectCollision();
@@ -51,25 +51,25 @@ public class GameBase {
     private boolean newGame = false;
     private boolean finishedRace = false;
 
-    private final List<WorldObserver> observers;
+    private final List<GObserver> observers;
 
     //--  CONSTRUCTOR --//
 
-    public GameBase(int width, int height) {
+    public GBase(int width, int height) {
 
         this.height = height;
         this.width = width;
 
         Point spawnPoint = new Point(width / 2, height / 3);
 
-        this.playerImg = ImageLoader.loadTextureSize(getResourcePack(), "player", 2, 2);
+	final BufferedImage playerImg = ImageLoader.loadTextureSize(getResourcePack(), "player", PLAYER_TEXTURE_SCALE, PLAYER_TEXTURE_SCALE);
         this.player = new Player(spawnPoint, PLAYER_START_ROTATION, playerImg);
 
         this.observers = new ArrayList<>();
 
-        if (gameModeType == GameModeType.Endless) {
+        if (gameModeType == GModeType.Endless) {
             gameMode = new Endless(this);
-        } else if (gameModeType == GameModeType.CombeDeCaron) {
+        } else if (gameModeType == GModeType.CombeDeCaron) {
             gameMode = new CombeDeCaron(this);
         }
 
@@ -280,20 +280,20 @@ public class GameBase {
 
     //-- OBSERVERS --//
 
-    public void addObserver(WorldObserver observer) {
+    public void addObserver(GObserver observer) {
         observers.add(observer);
     }
 
     private void notifyObservers() {
 
-        for (WorldObserver observer : observers) {
+        for (GObserver observer : observers) {
             observer.worldUpdated();
         }
     }
 
     //-- GAME RESET --//
 
-    public void restart(GameModeType gameModeType) {
+    public void restart(GModeType gameModeType) {
 
         gameOver = false;
         gamePaused = false;
@@ -316,9 +316,9 @@ public class GameBase {
 
         player.reset(spawnPoint, startRotation);
 
-        if (gameModeType == GameModeType.Endless) {
+        if (gameModeType == GModeType.Endless) {
             gameMode = new Endless(this);
-        } else if (gameModeType == GameModeType.CombeDeCaron) {
+        } else if (gameModeType == GModeType.CombeDeCaron) {
             gameMode = new CombeDeCaron(this);
         }
 
@@ -335,7 +335,7 @@ public class GameBase {
         return holder;
     }
 
-    public GameModeType getGameModeType() {
+    public GModeType getGameModeType() {
         return gameModeType;
     }
 }

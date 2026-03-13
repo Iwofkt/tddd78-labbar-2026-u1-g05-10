@@ -1,7 +1,7 @@
 package se.liu.simjolucul.dopeslope.slopes;
 
 import se.liu.simjolucul.dopeslope.handlers.ImageLoader;
-import se.liu.simjolucul.dopeslope.game.GameBase;
+import se.liu.simjolucul.dopeslope.game.GBase;
 import se.liu.simjolucul.dopeslope.gameObjects.*;
 import se.liu.simjolucul.dopeslope.handlers.collision.GateCollisionEndless;
 
@@ -17,7 +17,7 @@ public class Endless extends BaseGameMode {
     private final BufferedImage rockImg;
     private final GateCollisionEndless gateCollisionEndless = new GateCollisionEndless();
 
-    public Endless(GameBase gameBase) {
+    public Endless(GBase gameBase) {
         super(gameBase);
         this.rockImg = ImageLoader.loadTextureSize(
                 gameBase.getResourcePack(), "rock",

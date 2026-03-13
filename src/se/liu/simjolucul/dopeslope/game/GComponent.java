@@ -18,18 +18,23 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameComponent extends JComponent implements WorldObserver {
+public class GComponent extends JComponent implements GObserver
+{
 
     private static final int TEXT_MARGIN = 10;
     private static final int TEXT_SIZE = 20;
     private static final float MENU_TRANSPARENCY = 0.4F;
 
-    private final Map<GameModeType, HighscoreList> highscoreLists;
-    private final GameBase gameBase;
+    private final Map<GModeType, HighscoreList> highscoreLists;
+    private final GBase gameBase;
 
     private final List<Button> pauseMenuButtons = new ArrayList<>();
 
-    public GameComponent(GameBase gameBase, Main main, Map<GameModeType, HighscoreList> highscoreLists) {
+    public GComponent(GBase gameBase, Main main, Map<GModeType, HighscoreList> highscoreLists) {
+
+        setFocusable(true);
+        requestFocusInWindow();
+
         this.gameBase = gameBase;
         this.highscoreLists = highscoreLists;
 
@@ -55,6 +60,7 @@ public class GameComponent extends JComponent implements WorldObserver {
 
             @Override
             public void mouseMoved(MouseEvent e) {
+                System.out.println("Mouse moved at " + e.getPoint());
                 Point virtual = convertToVirtual(e.getPoint());
                 for (Button btn : pauseMenuButtons) {
                     btn.setHovered(virtual);
@@ -64,6 +70,7 @@ public class GameComponent extends JComponent implements WorldObserver {
 
             @Override
             public void mouseClicked(MouseEvent e) {
+                System.out.println("Mouse clicked at " + e.getPoint());
                 Point virtual = convertToVirtual(e.getPoint());
                 for (Button btn : pauseMenuButtons) {
                     btn.handleClick(virtual);
@@ -249,7 +256,7 @@ public class GameComponent extends JComponent implements WorldObserver {
 
         String scoreText;
 
-        if (gameBase.getGameModeType() == GameModeType.Endless) {
+        if (gameBase.getGameModeType() == GModeType.Endless) {
             scoreText = "Distance Traveled: " +
                     (int) gameBase.getPlayer().getDistanceTraveled() / 100;
         } else {
@@ -290,7 +297,7 @@ public class GameComponent extends JComponent implements WorldObserver {
 
             String valueText;
 
-            if (gameBase.getGameModeType() == GameModeType.Endless) {
+            if (gameBase.getGameModeType() == GModeType.Endless) {
                 valueText = String.valueOf(hs.getPoints());
             } else {
                 if (hs.isDNF()) {

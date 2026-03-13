@@ -1,4 +1,3 @@
-// MenuComponent.java (updated)
 package se.liu.simjolucul.dopeslope.menu;
 
 import se.liu.simjolucul.dopeslope.effects.snow.SnowParticle;
@@ -9,12 +8,12 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuComponent extends JComponent {
-    private MenuModel model;
+public class MComponent extends JComponent {
+    private Model model;
     private List<Rectangle> itemBounds;
     private List<ActionListener> actionListeners = new ArrayList<>();
 
-    public MenuComponent(MenuModel model) {
+    public MComponent(Model model) {
         this.model = model;
         this.itemBounds = new ArrayList<>();
         setFocusable(true);
@@ -145,9 +144,9 @@ public class MenuComponent extends JComponent {
         int lineHeight = 50;
         itemBounds.clear();
 
-        List<MenuModel.MenuItem> items = model.getItems();
+        List<Model.MenuItem> items = model.getItems();
         for (int i = 0; i < items.size(); i++) {
-            MenuModel.MenuItem item = items.get(i);
+            Model.MenuItem item = items.get(i);
             String text = item.label;
             int x = (model.getWidth() - fm.stringWidth(text)) / 2;
             int textTopY = y - fm.getAscent();
@@ -160,9 +159,6 @@ public class MenuComponent extends JComponent {
             if (isSelected) {
                 g2d.setColor(new Color(255, 215, 0));
                 g2d.setFont(new Font("Arial", Font.BOLD, 36));
-            } else if (isHovered) {
-                g2d.setColor(new Color(255, 140, 0));
-                g2d.setFont(new Font("Arial", Font.BOLD, 34));
             } else {
                 g2d.setColor(Color.LIGHT_GRAY);
                 g2d.setFont(new Font("Arial", Font.PLAIN, 32));
