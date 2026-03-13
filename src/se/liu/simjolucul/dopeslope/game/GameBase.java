@@ -3,11 +3,11 @@ package se.liu.simjolucul.dopeslope.game;
 import se.liu.simjolucul.dopeslope.slopes.CombeDeCaron;
 import se.liu.simjolucul.dopeslope.slopes.Endless;
 import se.liu.simjolucul.dopeslope.slopes.GameMode;
-import se.liu.simjolucul.dopeslope.effects.snow.SnowFall;
-import se.liu.simjolucul.dopeslope.effects.snow.SnowParticle;
-import se.liu.simjolucul.dopeslope.effects.snow.SnowSpray;
+import se.liu.simjolucul.dopeslope.effects.snowfx.SnowFall;
+import se.liu.simjolucul.dopeslope.effects.snowfx.SnowParticle;
+import se.liu.simjolucul.dopeslope.effects.snowfx.SnowSpray;
 import se.liu.simjolucul.dopeslope.effects.track.Tracks;
-import se.liu.simjolucul.dopeslope.effects.track.trackParticle;
+import se.liu.simjolucul.dopeslope.effects.track.TrackParticle;
 import se.liu.simjolucul.dopeslope.gameObjects.*;
 import se.liu.simjolucul.dopeslope.handlers.GameTimer;
 import se.liu.simjolucul.dopeslope.handlers.ImageLoader;
@@ -20,23 +20,27 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class GBase
-{
-    private final static int PLAYER_TEXTURE_SCALE = 2;
-    private final static double PLAYER_START_ROTATION = 0.5 * Math.PI;
+public class GameBase {
+
+    // Constants (all private and final)
+    private static final int PLAYER_TEXTURE_SCALE = 2;
+    private static final double PLAYER_START_ROTATION = 0.5 * Math.PI;
     private static final int MARGIN = 30;
+    private static final int CENTISECONDS_PER_SECOND = 100;
+    private static final double SPRAY_THRESHOLD_SPEED = 8.0;
+    private final static String RESOURCE_PACK = "standardPixel";
+
     private final int width;
     private final int height;
 
-    GModeType gameModeType = GModeType.Endless;
-    String resourcePack = "standardPixel";
+    // Made private to avoid package visibility
+    private GameModeType gameModeType = GameModeType.Endless;
 
     private final Player player;
-
     private final GameTimer gameTimer = new GameTimer();
     private final ObjectCollision objectCollision = new ObjectCollision();
     private InputHandler inputHandler = null;
-    GameMode gameMode = null;
+    private GameMode gameMode = null;               // made private
 
     private final SnowFall snowFall;
     private final Tracks playerTracks;
@@ -44,32 +48,32 @@ public class GBase
 
     private final List<Obstacle> obstacles = new ArrayList<>();
     private final List<Gate> gates = new ArrayList<>();
-    private final List<Finishline> finishline = new ArrayList<>();
+    private final List<Finishline> finishLine = new ArrayList<>();   // renamed from finishline (camelCase)
 
     private boolean gameOver = false;
     private boolean gamePaused = false;
-    private boolean newGame = false;
+    private boolean newGameFlag = false;            // renamed from newGame to avoid conflict with method
     private boolean finishedRace = false;
 
-    private final List<GObserver> observers;
+    private final List<GameObserver> observers;
 
-    //--  CONSTRUCTOR --//
+    //-- CONSTRUCTOR --//
 
-    public GBase(int width, int height) {
-
+    public GameBase(int width, int height) {
         this.height = height;
         this.width = width;
 
         Point spawnPoint = new Point(width / 2, height / 3);
 
-	final BufferedImage playerImg = ImageLoader.loadTextureSize(getResourcePack(), "player", PLAYER_TEXTURE_SCALE, PLAYER_TEXTURE_SCALE);
+        final BufferedImage playerImg = ImageLoader.loadTextureSize(
+                getResourcePack(), "player", PLAYER_TEXTURE_SCALE, PLAYER_TEXTURE_SCALE);
         this.player = new Player(spawnPoint, PLAYER_START_ROTATION, playerImg);
 
         this.observers = new ArrayList<>();
 
-        if (gameModeType == GModeType.Endless) {
+        if (gameModeType == GameModeType.Endless) {
             gameMode = new Endless(this);
-        } else if (gameModeType == GModeType.CombeDeCaron) {
+        } else if (gameModeType == GameModeType.CombeDeCaron) {
             gameMode = new CombeDeCaron(this);
         }
 
@@ -94,11 +98,12 @@ public class GBase
         return player;
     }
 
-    public boolean getGamePaused() {
+    // Boolean getters use "is" prefix (JavaBeans convention)
+    public boolean isGamePaused() {
         return gamePaused;
     }
 
-    public boolean getGameOver() {
+    public boolean isGameOver() {
         return gameOver;
     }
 
@@ -110,19 +115,20 @@ public class GBase
         return gates;
     }
 
-    public List<Finishline> getFinishline() {
-        return finishline;
+    // Renamed getter to match camelCase field name
+    public List<Finishline> getFinishLine() {
+        return finishLine;
     }
 
     public String getResourcePack() {
-        return resourcePack;
+        return RESOURCE_PACK;
     }
 
     public List<SnowParticle> getSnowParticles() {
         return snowFall.getSnowParticles();
     }
 
-    public List<trackParticle> getTrackParticles() {
+    public List<TrackParticle> getTrackParticles() {
         return playerTracks.getTrackParticles();
     }
 
@@ -148,7 +154,7 @@ public class GBase
 
     // Used for alpine highscores
     public int getElapsedCentiseconds() {
-        return (int) (gameTimer.getTime() * 100);
+        return (int) (gameTimer.getTime() * CENTISECONDS_PER_SECOND);   // magic number replaced
     }
 
     //-- SETTERS --//
@@ -184,22 +190,18 @@ public class GBase
     //-- WORLD UPDATE --//
 
     public void update() {
-
-        if (getGameOver() || getGamePaused()) return;
+        if (isGameOver() || isGamePaused()) return;
 
         player.update();
         player.moveHorizontally(width, MARGIN);
 
         if (inputHandler != null) {
-
             if (inputHandler.isLeftPressed()) {
                 player.rotate(Direction.LEFT);
             }
-
             if (inputHandler.isRightPressed()) {
                 player.rotate(Direction.RIGHT);
             }
-
             if (inputHandler.isQuitPressed()) {
                 System.exit(0);
             }
@@ -208,7 +210,7 @@ public class GBase
         gameMode.update();
 
         handleCollision();
-        filterObstacles();
+        removeOffScreenObjects();      // renamed from filterObstacles
 
         updateParticles();
 
@@ -216,7 +218,6 @@ public class GBase
     }
 
     private void updateParticles() {
-
         snowFall.update((int) player.getCurrentSpeed());
         playerTracks.updateMovement((int) player.getYSpeed());
 
@@ -224,7 +225,7 @@ public class GBase
 
         playerTracks.spawnTracks(player, moveAngle);
 
-        if (player.getCurrentSpeed() > 8.0) {
+        if (player.getCurrentSpeed() > SPRAY_THRESHOLD_SPEED) {   // magic number replaced
             Point[] tips = player.getSkiTipPositions();
 
             for (Point tip : tips) {
@@ -236,17 +237,15 @@ public class GBase
     }
 
     private void handleCollision() {
-
         for (Obstacle obstacle : obstacles) {
-
             if (objectCollision.checkCollision(player, obstacle)) {
                 setGameOver(true);
             }
         }
     }
 
-    private void filterObstacles() {
-
+    // Renamed method to better describe its purpose (removes off-screen objects)
+    private void removeOffScreenObjects() {
         Iterator<Obstacle> itO = obstacles.iterator();
         while (itO.hasNext()) {
             Obstacle o = itO.next();
@@ -267,7 +266,7 @@ public class GBase
             }
         }
 
-        Iterator<Finishline> itF = finishline.iterator();
+        Iterator<Finishline> itF = finishLine.iterator();   // updated field name
         while (itF.hasNext()) {
             Finishline f = itF.next();
             f.update(player.getYSpeed());
@@ -280,33 +279,34 @@ public class GBase
 
     //-- OBSERVERS --//
 
-    public void addObserver(GObserver observer) {
+    public void addObserver(GameObserver observer) {
         observers.add(observer);
     }
 
     private void notifyObservers() {
-
-        for (GObserver observer : observers) {
+        for (GameObserver observer : observers) {
             observer.worldUpdated();
         }
     }
 
     //-- GAME RESET --//
 
-    public void restart(GModeType gameModeType) {
-
+    public void restart(GameModeType gameModeType) {
         gameOver = false;
         gamePaused = false;
-        newGame = true;
+        newGameFlag = true;          // renamed field
         finishedRace = false;
         this.gameModeType = gameModeType;
 
-        inputHandler.setLeftPressed(false);
-        inputHandler.setRightPressed(false);
+        // Null check to avoid potential NullPointerException
+        if (inputHandler != null) {
+            inputHandler.setLeftPressed(false);
+            inputHandler.setRightPressed(false);
+        }
 
         obstacles.clear();
         gates.clear();
-        finishline.clear();
+        finishLine.clear();           // updated field name
 
         gameTimer.reset();
         gameTimer.start();
@@ -316,9 +316,9 @@ public class GBase
 
         player.reset(spawnPoint, startRotation);
 
-        if (gameModeType == GModeType.Endless) {
+        if (gameModeType == GameModeType.Endless) {
             gameMode = new Endless(this);
-        } else if (gameModeType == GModeType.CombeDeCaron) {
+        } else if (gameModeType == GameModeType.CombeDeCaron) {
             gameMode = new CombeDeCaron(this);
         }
 
@@ -329,13 +329,17 @@ public class GBase
         notifyObservers();
     }
 
-    public boolean newGame() {
-        boolean holder = newGame;
-        newGame = false;
-        return holder;
+    /**
+     * Returns true if a new game was started since the last call to this method,
+     * and resets the flag. Used by the UI to detect when to reinitialize views.
+     */
+    public boolean pollNewGameFlag() {   // renamed from newGame()
+        boolean wasNewGame = newGameFlag;
+        newGameFlag = false;
+        return wasNewGame;
     }
 
-    public GModeType getGameModeType() {
+    public GameModeType getGameModeType() {
         return gameModeType;
     }
 }

@@ -1,4 +1,4 @@
-package se.liu.simjolucul.dopeslope.effects.snow;
+package se.liu.simjolucul.dopeslope.effects.snowfx;
 
 import se.liu.simjolucul.dopeslope.effects.Particle;
 import se.liu.simjolucul.dopeslope.effects.ParticleConfig;
@@ -10,6 +10,12 @@ import java.util.Random;
 
 public class SnowSpray {
     private static final Random RND = new Random();
+
+    // Constants for magic numbers
+    private static final double OFFSET_STD_DEV = 3.0;
+    private static final double SPREAD_ANGLE = 0.5;
+    private static final double SPEED_FACTOR_MIN = 0.5;
+    private static final double SPEED_FACTOR_RANGE = 0.5;
 
     private final List<SprayParticle> particles = new ArrayList<>();
     private final double spawnRate;          // particles per spawn call
@@ -49,13 +55,15 @@ public class SnowSpray {
         if (RND.nextDouble() < remainder) count++;
 
         for (int i = 0; i < count; i++) {
-            double offsetX = RND.nextGaussian() * 3;
-            double offsetY = RND.nextGaussian() * 3;
+            double offsetX = RND.nextGaussian() * OFFSET_STD_DEV;
+            double offsetY = RND.nextGaussian() * OFFSET_STD_DEV;
 
             double baseAngle = directionAngle + Math.PI; // opposite direction
-            double spread = 0.5;
-            double angle = baseAngle + (RND.nextDouble() - 0.5) * spread;
-            double speed = playerSpeed * (0.5 + RND.nextDouble() * 0.5);
+
+            // Angle with spread: center around baseAngle, random within [-SPREAD_ANGLE/2, +SPREAD_ANGLE/2]
+            double angle = baseAngle + (RND.nextDouble() - 0.5) * SPREAD_ANGLE;
+
+            double speed = playerSpeed * (SPEED_FACTOR_MIN + RND.nextDouble() * SPEED_FACTOR_RANGE);
 
             double vx = Math.cos(angle) * speed;
             double vy = Math.sin(angle) * speed;
@@ -70,15 +78,17 @@ public class SnowSpray {
     }
 
     public static class SprayParticle extends Particle {
-        private double vx, vy;
+        // Renamed to avoid short names and potential hiding of superclass fields
+        private double velocityX, velocityY;
+
         private final Color color;
         private final int alphaMin, alphaMax;
         private final int maxLife; // store initial life for fading
 
         public SprayParticle(ParticleConfig config, double vx, double vy) {
             super(config);
-            this.vx = vx;
-            this.vy = vy;
+            this.velocityX = vx;
+            this.velocityY = vy;
             this.color = config.color;
             this.alphaMin = config.alphaMin;
             this.alphaMax = config.alphaMax;
@@ -88,14 +98,14 @@ public class SnowSpray {
         @Override
         public void update(int worldSpeed) {
             y -= worldSpeed; // world scrolls up
-            x += vx;
-            y += vy;
+            x += velocityX;
+            y += velocityY;
             life--;
         }
 
         @Override
         public void draw(Graphics2D g2d) {
-            float lifeRatio = (float) life / (float) maxLife;
+            float lifeRatio = (float) life / maxLife;
             int alpha = (int) (alphaMin + (alphaMax - alphaMin) * lifeRatio);
             alpha = Math.max(alphaMin, Math.min(alphaMax, alpha)); // clamp
 
@@ -103,7 +113,7 @@ public class SnowSpray {
             g2d.fillOval((int) x, (int) y, size, size);
         }
     }
-    
+
     public void clear() {
         particles.clear();
     }

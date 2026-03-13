@@ -1,4 +1,4 @@
-package se.liu.simjolucul.dopeslope.effects.snow;
+package se.liu.simjolucul.dopeslope.effects.snowfx;
 
 
 import se.liu.simjolucul.dopeslope.effects.Particle;

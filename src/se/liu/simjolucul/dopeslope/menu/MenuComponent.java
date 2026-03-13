@@ -1,6 +1,6 @@
 package se.liu.simjolucul.dopeslope.menu;
 
-import se.liu.simjolucul.dopeslope.effects.snow.SnowParticle;
+import se.liu.simjolucul.dopeslope.effects.snowfx.SnowParticle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,13 +8,13 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MComponent extends JComponent {
-    private Model model;
+public class MenuComponent extends JComponent {
+    private MenuModel menuModel;
     private List<Rectangle> itemBounds;
     private List<ActionListener> actionListeners = new ArrayList<>();
 
-    public MComponent(Model model) {
-        this.model = model;
+    public MenuComponent(MenuModel menuModel) {
+        this.menuModel = menuModel;
         this.itemBounds = new ArrayList<>();
         setFocusable(true);
         InputMap im = getInputMap(JComponent.WHEN_FOCUSED);
@@ -29,8 +29,8 @@ public class MComponent extends JComponent {
         am.put("moveUp", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.selectPrevious();
-                model.setHoveredIndex(model.getSelectedIndex());
+                menuModel.selectPrevious();
+                menuModel.setHoveredIndex(menuModel.getSelectedIndex());
                 repaint();  // because model doesn't notify on selection change
             }
         });
@@ -38,8 +38,8 @@ public class MComponent extends JComponent {
         am.put("moveDown", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.selectNext();
-                model.setHoveredIndex(model.getSelectedIndex());
+                menuModel.selectNext();
+                menuModel.setHoveredIndex(menuModel.getSelectedIndex());
                 repaint();
             }
         });
@@ -47,9 +47,9 @@ public class MComponent extends JComponent {
         am.put("select", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int idx = model.getSelectedIndex();
-                if (idx >= 0 && idx < model.getItems().size()) {
-                    String command = model.getItems().get(idx).command;
+                int idx = menuModel.getSelectedIndex();
+                if (idx >= 0 && idx < menuModel.getItems().size()) {
+                    String command = menuModel.getItems().get(idx).command;
                     fireActionPerformed(command);
                 }
             }
@@ -69,21 +69,21 @@ public class MComponent extends JComponent {
                         }
                     }
                 }
-                model.setHoveredIndex(index);
-                model.setSelectedIndex(index);
+                menuModel.setHoveredIndex(index);
+                menuModel.setSelectedIndex(index);
                 repaint();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                model.setHoveredIndex(-1);
+                menuModel.setHoveredIndex(-1);
                 repaint();
             }
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (model.getHoveredIndex() != -1) {
-                    String command = model.getItems().get(model.getHoveredIndex()).command;
+                if (menuModel.getHoveredIndex() != -1) {
+                    String command = menuModel.getItems().get(menuModel.getHoveredIndex()).command;
                     fireActionPerformed(command);
                 }
             }
@@ -111,29 +111,29 @@ public class MComponent extends JComponent {
         // Scaling and centering
         int pw = getWidth();
         int ph = getHeight();
-        double scaleX = (double) pw / model.getWidth();
-        double scaleY = (double) ph / model.getHeight();
+        double scaleX = (double) pw / menuModel.getWidth();
+        double scaleY = (double) ph / menuModel.getHeight();
         double scale = Math.min(scaleX, scaleY);
-        int offsetX = (int) ((pw - model.getWidth() * scale) / 2);
-        int offsetY = (int) ((ph - model.getHeight() * scale) / 2);
+        int offsetX = (int) ((pw - menuModel.getWidth() * scale) / 2);
+        int offsetY = (int) ((ph - menuModel.getHeight() * scale) / 2);
         g2d.translate(offsetX, offsetY);
         g2d.scale(scale, scale);
 
         // Background
         g2d.setColor(new Color(20, 20, 30));
-        g2d.fillRect(0, 0, model.getWidth(), model.getHeight());
+        g2d.fillRect(0, 0, menuModel.getWidth(), menuModel.getHeight());
 
 
-        for(SnowParticle p : model.getSnow()){
+        for(SnowParticle p : menuModel.getSnow()){
             p.draw(g2d);
         }
 
         // Draw title
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Arial", Font.BOLD, 48));
-        String title = model.getTitle();
+        String title = menuModel.getTitle();
         FontMetrics fm = g2d.getFontMetrics();
-        int titleX = (model.getWidth() - fm.stringWidth(title)) / 2;
+        int titleX = (menuModel.getWidth() - fm.stringWidth(title)) / 2;
         int titleY = 150;
         g2d.drawString(title, titleX, titleY);
 
@@ -144,17 +144,17 @@ public class MComponent extends JComponent {
         int lineHeight = 50;
         itemBounds.clear();
 
-        List<Model.MenuItem> items = model.getItems();
+        List<MenuModel.MenuItem> items = menuModel.getItems();
         for (int i = 0; i < items.size(); i++) {
-            Model.MenuItem item = items.get(i);
+            MenuModel.MenuItem item = items.get(i);
             String text = item.label;
-            int x = (model.getWidth() - fm.stringWidth(text)) / 2;
+            int x = (menuModel.getWidth() - fm.stringWidth(text)) / 2;
             int textTopY = y - fm.getAscent();
             Rectangle rect = new Rectangle(x, textTopY, fm.stringWidth(text), fm.getHeight());
             itemBounds.add(rect);
 
-            boolean isSelected = (i == model.getSelectedIndex());
-            boolean isHovered = (i == model.getHoveredIndex());
+            boolean isSelected = (i == menuModel.getSelectedIndex());
+            boolean isHovered = (i == menuModel.getHoveredIndex());
 
             if (isSelected) {
                 g2d.setColor(new Color(255, 215, 0));
@@ -165,7 +165,7 @@ public class MComponent extends JComponent {
             }
 
             fm = g2d.getFontMetrics();
-            x = (model.getWidth() - fm.stringWidth(text)) / 2;
+            x = (menuModel.getWidth() - fm.stringWidth(text)) / 2;
             g2d.drawString(text, x, y);
             y += lineHeight;
         }
@@ -175,8 +175,8 @@ public class MComponent extends JComponent {
     private Point convertToVirtual(Point screenPoint) {
         int pw = getWidth();
         int ph = getHeight();
-        int vw = model.getWidth();
-        int vh = model.getHeight();
+        int vw = menuModel.getWidth();
+        int vh = menuModel.getHeight();
 
         double scaleX = (double) pw / vw;
         double scaleY = (double) ph / vh;

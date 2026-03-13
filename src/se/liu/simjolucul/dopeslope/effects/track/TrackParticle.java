@@ -7,10 +7,10 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.Random;
 
-public class trackParticle extends Particle {
+public class TrackParticle extends Particle {
     private final ParticleConfig config;
     private final Random RND = new Random();
-    public trackParticle(ParticleConfig config) {
+    public TrackParticle(ParticleConfig config) {
         super(config);
         this.config = new ParticleConfig(config);
     }

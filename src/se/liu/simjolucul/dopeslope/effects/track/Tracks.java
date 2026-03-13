@@ -11,37 +11,37 @@ import java.util.Random;
 public class Tracks {
     private static final Random RND = new Random();
 
-    private final int ALPHA_MAX = 255;
-    private final int ALPHA_MIN = 255;
+    private final static int ALPHA_MAX = 255;
+    private final static int ALPHA_MIN = 255;
 
-    private final ParticleConfig conf;
+    private final ParticleConfig config;
     private final int spawnrate;
-    private final List<trackParticle> trackParticles = new ArrayList<>();
+    private final List<TrackParticle> TrackParticles = new ArrayList<>();
 
     public Tracks(int spawnrate, double angle, int width) {
         this.spawnrate = spawnrate;
 
-        conf = new ParticleConfig();
-        conf.y = 0;
-        conf.angle = angle;
-        conf.recWidthMin = 6;
-        conf.recWidthMax = 6;
-        conf.recHeightMin = 15;
-        conf.recHeightMax = 15;
-        conf.lifeMax = 200;
-        conf.lifeMin = 100;
-        conf.alphaMax = ALPHA_MAX;
-        conf.alphaMin = ALPHA_MIN;
-        conf.color = Color.GRAY;
+        config = new ParticleConfig();
+        config.y = 0;
+        config.angle = angle;
+        config.recWidthMin = 6;
+        config.recWidthMax = 6;
+        config.recHeightMin = 15;
+        config.recHeightMax = 15;
+        config.lifeMax = 200;
+        config.lifeMin = 100;
+        config.alphaMax = ALPHA_MAX;
+        config.alphaMin = ALPHA_MIN;
+        config.color = Color.GRAY;
     }
 
-    public List<trackParticle> getTrackParticles() {
-        return trackParticles;
+    public List<TrackParticle> getTrackParticles() {
+        return TrackParticles;
     }
 
     public void updateMovement(int speed) {
-        trackParticles.removeIf(p -> !p.isAlive());
-        for (trackParticle p : trackParticles) {
+        TrackParticles.removeIf(p -> !p.isAlive());
+        for (TrackParticle p : TrackParticles) {
             p.update(speed);
         }
     }
@@ -51,22 +51,22 @@ public class Tracks {
         Point rightTip = tips[1];
 
         // Orient particles along the movement direction
-        conf.angle = moveAngle + Math.PI / 2;
+        config.angle = moveAngle + Math.PI / 2;
 
         for (int i = 0; i < spawnrate; i++) {
             // Left ski
-            conf.x = leftTip.x - conf.recWidthMax / 2;
-            conf.y = leftTip.y - conf.recHeightMax / 2;
-            trackParticles.add(new trackParticle(conf));
+            config.x = leftTip.x - config.recWidthMax / 2;
+            config.y = leftTip.y - config.recHeightMax / 2;
+            TrackParticles.add(new TrackParticle(config));
 
             // Right ski
-            conf.x = rightTip.x - conf.recWidthMax / 2;
-            conf.y = rightTip.y - conf.recHeightMax / 2;
-            trackParticles.add(new trackParticle(conf));
+            config.x = rightTip.x - config.recWidthMax / 2;
+            config.y = rightTip.y - config.recHeightMax / 2;
+            TrackParticles.add(new TrackParticle(config));
         }
     }
 
     public void clear() {
-        trackParticles.clear();
+        TrackParticles.clear();
     }
 }

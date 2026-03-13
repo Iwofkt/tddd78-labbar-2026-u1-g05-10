@@ -1709,8 +1709,8 @@ Source/WebCore/Modules/indexeddb/shared
 Source/WebCore/Modules/mediacontrols
 Source/WebCore/Modules/mediasource
 Source/WebCore/Modules/mediastream
-Source/WebCore/Modules/model-element
-Source/WebCore/Modules/model-element/scenekit
+Source/WebCore/Modules/menuModel-element
+Source/WebCore/Modules/menuModel-element/scenekit
 Source/WebCore/Modules/modern-media-controls/controls
 Source/WebCore/Modules/modern-media-controls
 Source/WebCore/Modules/modern-media-controls/media
@@ -2051,8 +2051,8 @@ Source/WebCore/Modules/mediacapabilities
 Source/WebCore/Modules/mediasession
 Source/WebCore/Modules/mediasource
 Source/WebCore/Modules/mediastream
-Source/WebCore/Modules/model-element
-Source/WebCore/Modules/model-element/dummy
+Source/WebCore/Modules/menuModel-element
+Source/WebCore/Modules/menuModel-element/dummy
 Source/WebCore/Modules/modern-media-controls/controls
 Source/WebCore/Modules/modern-media-controls/media
 Source/WebCore/Modules/notifications

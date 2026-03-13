@@ -1,6 +1,6 @@
 package se.liu.simjolucul.dopeslope.handlers.interaction;
 
-import se.liu.simjolucul.dopeslope.game.GBase;
+import se.liu.simjolucul.dopeslope.game.GameBase;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
@@ -12,9 +12,9 @@ public class InputHandler {
     private boolean rightPressed = false;
     private boolean quitPressed = false;
 
-    private final GBase gameBase;
+    private final GameBase gameBase;
 
-    public InputHandler(JComponent pane, GBase gameBase) {
+    public InputHandler(JComponent pane, GameBase gameBase) {
         this.gameBase = gameBase;
 
         // Make sure pane can receive key events

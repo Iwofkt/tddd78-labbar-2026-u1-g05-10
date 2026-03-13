@@ -1,13 +1,13 @@
 package se.liu.simjolucul.dopeslope.menu;
 
-import se.liu.simjolucul.dopeslope.effects.snow.SnowFall;
-import se.liu.simjolucul.dopeslope.effects.snow.SnowParticle;
+import se.liu.simjolucul.dopeslope.effects.snowfx.SnowFall;
+import se.liu.simjolucul.dopeslope.effects.snowfx.SnowParticle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Model
+public class MenuModel
 {
     private static final int SNOW_SPEED = 10;
     private final int width;
@@ -19,15 +19,15 @@ public class Model
     private final List<Runnable> changeListeners = new ArrayList<>();
     private final SnowFall snowFall;
 
-    public Model(int width, int height) {
+    public MenuModel(int width, int height) {
         this.width = width;
         this.height = height;
-        setScreen(MScreens.MAIN);
+        setScreen(MenuScreens.MAIN);
         snowFall = new SnowFall(1, 2, width);
         snowFall.initializeSnowfall(width, height);
     }
 
-    public void setScreen(MScreens screens) {
+    public void setScreen(MenuScreens screens) {
         switch (screens) {
             case MAIN:
                 title = "Dope Slope";

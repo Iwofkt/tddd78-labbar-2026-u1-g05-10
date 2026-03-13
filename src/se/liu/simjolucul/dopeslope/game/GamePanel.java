@@ -12,14 +12,14 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Map;
 
-public class GPanel extends JPanel implements ActionListener {
+public class GamePanel extends JPanel implements ActionListener {
     private final Main main;
     private final int width;
     private final int height;
-    private final Map<GModeType, HighscoreList> highscoreLists;
+    private final Map<GameModeType, HighscoreList> highscoreLists;
 
-    private final GBase gameBase;
-    private final GComponent component;
+    private final GameBase gameBase;
+    private final GameComponent component;
     private final InputHandler inputHandler;
     private final Timer timer;
 
@@ -28,7 +28,7 @@ public class GPanel extends JPanel implements ActionListener {
 
     public static final int FPS = 40;
 
-    public GPanel(Main main, int width, int height, Map<GModeType, HighscoreList> highscoreLists) {
+    public GamePanel(Main main, int width, int height, Map<GameModeType, HighscoreList> highscoreLists) {
         this.main = main;
         this.width = width;
         this.height = height;
@@ -37,9 +37,9 @@ public class GPanel extends JPanel implements ActionListener {
         setBackground(Color.BLACK);
         setLayout(new BorderLayout());
 
-        gameBase = new GBase(width, height);
+        gameBase = new GameBase(width, height);
 
-        component = new GComponent(gameBase, main, highscoreLists);
+        component = new GameComponent(gameBase, main, highscoreLists);
         inputHandler = new InputHandler(component, gameBase);
         gameBase.setInputHandler(inputHandler);
 
@@ -48,7 +48,7 @@ public class GPanel extends JPanel implements ActionListener {
         timer = new Timer(1000 / FPS, this);
     }
 
-    public void startGame(GModeType gameModeType) {
+    public void startGame(GameModeType gameModeType) {
         if (!running) {
             running = true;
             gameBase.restart(gameModeType);
@@ -95,7 +95,7 @@ public class GPanel extends JPanel implements ActionListener {
 
         username = username.trim();
 
-        GModeType mode = gameBase.getGameModeType();
+        GameModeType mode = gameBase.getGameModeType();
         HighscoreList highscoreList = highscoreLists.get(mode);
 
         if (highscoreList == null) {

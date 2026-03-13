@@ -1,61 +1,61 @@
 package se.liu.simjolucul.dopeslope.menu;
 
-import se.liu.simjolucul.dopeslope.game.GModeType;
+import se.liu.simjolucul.dopeslope.game.GameModeType;
 import se.liu.simjolucul.dopeslope.Main;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MPanel extends JPanel implements ActionListener {
+public class MenuPanel extends JPanel implements ActionListener {
     private Main main;
-    private Model menuModel;
-    private MComponent menuMComponent;
+    private MenuModel menuModel;
+    private MenuComponent menuMenuComponent;
     private Timer timer;
     public static final int FPS = 40;
     private boolean running = false;
 
-    public MPanel(Main main, int width, int height) {
+    public MenuPanel(Main main, int width, int height) {
         this.main = main;
         setLayout(new BorderLayout());
         setBackground(Color.BLACK);
 
-        menuModel = new Model(width, height);
-        menuMComponent = new MComponent(menuModel);
+        menuModel = new MenuModel(width, height);
+        menuMenuComponent = new MenuComponent(menuModel);
 
         // Listen for menu actions (e.g., Start Game selected)
-        menuMComponent.addActionListener(e -> {
+        menuMenuComponent.addActionListener(e -> {
             String command = e.getActionCommand();
             if ("Start Game".equals(command)) {
-                main.startGame(GModeType.Endless);
+                main.startGame(GameModeType.Endless);
             }
             else if ("Options".equals(command)) {
                 // handle options
             }
         });
 
-        add(menuMComponent, BorderLayout.CENTER);
+        add(menuMenuComponent, BorderLayout.CENTER);
 
         timer = new Timer(1000 / FPS, this);
 
         // In MenuPanel constructor, after creating menuComponent:
-        menuMComponent.addActionListener(e -> {
+        menuMenuComponent.addActionListener(e -> {
             String cmd = e.getActionCommand();
             switch (cmd) {
                 case "PLAY":
-                    menuModel.setScreen(MScreens.MODE_SELECT);
+                    menuModel.setScreen(MenuScreens.MODE_SELECT);
                     break;
                 case "MODE_ENDLESS":
-                    main.startGame(GModeType.Endless);
+                    main.startGame(GameModeType.Endless);
                     break;
                 case "MODE_COMBE":
-                    main.startGame(GModeType.CombeDeCaron);
+                    main.startGame(GameModeType.CombeDeCaron);
                     break;
                 case "BACK":
-                    menuModel.setScreen(MScreens.MAIN);
+                    menuModel.setScreen(MenuScreens.MAIN);
                     break;
                 case "OPTIONS":
-                    menuModel.setScreen(MScreens.OPTIONS);
+                    menuModel.setScreen(MenuScreens.OPTIONS);
                     break;
                 case "EXIT":
                     System.exit(0);
@@ -69,7 +69,7 @@ public class MPanel extends JPanel implements ActionListener {
         if (!running) {
             running = true;
             timer.start();
-            menuMComponent.requestFocusInWindow();
+            menuMenuComponent.requestFocusInWindow();
         }
     }
 
@@ -82,7 +82,7 @@ public class MPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        menuMComponent.repaint();
+        menuMenuComponent.repaint();
         menuModel.update();
     }
 }
