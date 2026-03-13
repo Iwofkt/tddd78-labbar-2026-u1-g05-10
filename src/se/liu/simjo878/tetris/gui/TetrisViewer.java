@@ -88,10 +88,9 @@ public class TetrisViewer
 	    if (board.getGameOver()) {
 		if (!highscoreSaved) {
 		    saveHighscore();
-		    highscoreSaved = true; // Sätt flaggan till true så att den inte sparar igen vid nästa game over.
+		    highscoreSaved = true;
 		}
 		if (board.getNewGame()) {
-		    // Återställ spelet istället för att skapa en ny instans
 		    board.resetBoard();
 		    resetTimer((Timer)e.getSource());
 		    highscoreSaved = false;
